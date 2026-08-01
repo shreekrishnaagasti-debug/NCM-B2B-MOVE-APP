@@ -50,6 +50,7 @@ input[readonly]{background:#f8fafc;color:#2563eb;font-weight:700;border-color:#e
 .branch-card:active{transform:scale(0.96)}
 .branch-card.selected{background:#2563eb;border-color:#2563eb;color:#fff;box-shadow:0 2px 8px rgba(37,99,235,0.25)}
 .branch-card .branch-icon{font-size:20px;margin-bottom:4px;display:block}
+.branch-display{background:#f0f9ff;border:2px solid #2563eb;border-radius:10px;padding:14px;text-align:center;font-size:16px;font-weight:800;color:#2563eb;margin-bottom:12px}
 .cam-modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#000;z-index:2000;flex-direction:column}
 .cam-modal.active{display:flex}
 .cam-modal video{width:100%;height:calc(100% - 80px);object-fit:cover}
@@ -133,10 +134,19 @@ input[readonly]{background:#f8fafc;color:#2563eb;font-weight:700;border-color:#e
     <div id="receiveTab" class="hidden">
       <div class="card">
         <h4>Receive Shipments</h4>
+
+        <!-- DRIVER: Branch Grid -->
         <div id="driverBranchBox" class="hidden">
-          <label style="color:#2563eb">DRIVER — Select Branch</label>
+          <label style="color:#2563eb">DRIVER — Select Branch to Receive</label>
           <div class="branch-grid" id="branchGrid"></div>
         </div>
+
+        <!-- STAFF: Branch Display -->
+        <div id="staffBranchBox" class="hidden">
+          <label>Receiving For Branch</label>
+          <div class="branch-display" id="staffBranchDisplay">-</div>
+        </div>
+
         <label>Van Number</label>
         <div class="flex">
           <input type="text" id="recvVanNo" placeholder="e.g. 843" class="flex-1">
@@ -187,7 +197,7 @@ input[readonly]{background:#f8fafc;color:#2563eb;font-weight:700;border-color:#e
 </div>
 
 <script>
-const APP_VERSION = "v5-driver-grid";
+const APP_VERSION = "v6-staff-driver";
 let SCRIPT_URL = localStorage.getItem('ncm_url') || "";
 let currentBranch = "";
 let currentRole = "";
@@ -313,11 +323,14 @@ function showApp() {
 
   const badge = document.getElementById('roleBadge');
   const driverBox = document.getElementById('driverBranchBox');
+  const staffBox = document.getElementById('staffBranchBox');
 
   if (currentRole === 'driver') {
     badge.className = 'driver-badge';
     badge.innerText = 'DRIVER';
     driverBox.classList.remove('hidden');
+    staffBox.classList.add('hidden');
+
     const grid = document.getElementById('branchGrid');
     grid.innerHTML = "";
     driverBranches.forEach((b, idx) => {
@@ -333,10 +346,14 @@ function showApp() {
       grid.appendChild(div);
     });
     if (driverBranches.length) currentBranch = driverBranches[0];
+
   } else {
+    // BRANCH STAFF
     badge.className = '';
     badge.innerText = '';
     driverBox.classList.add('hidden');
+    staffBox.classList.remove('hidden');
+    document.getElementById('staffBranchDisplay').innerText = currentBranch;
   }
 
   const destSel = document.getElementById('destBranch');
