@@ -11,9 +11,6 @@ body{font-family:Segoe UI,Arial,sans-serif;background:#f8fafc;color:#1e293b;min-
 .header h1{font-size:20px;color:#dc2626;font-weight:800;letter-spacing:0.5px}
 .header p{font-size:11px;color:#64748b;margin-top:2px}
 .container{padding:15px;max-width:520px;margin:0 auto}
-.hours-banner{text-align:center;padding:10px;font-size:12px;font-weight:700;border-radius:8px;margin-bottom:12px}
-.hours-banner.open{background:#dcfce7;color:#166534;border:1px solid #bbf7d0}
-.hours-banner.closed{background:#fee2e2;color:#991b1b;border:1px solid #fecaca}
 .login-box{background:#fff;border-radius:14px;padding:28px 20px;margin-top:20px;border:1px solid #e2e8f0;box-shadow:0 1px 3px rgba(0,0,0,0.04)}
 .login-box h2{text-align:center;color:#1e293b;margin-bottom:20px;font-size:18px;font-weight:700}
 .login-box input{width:100%;padding:14px;font-size:18px;border:2px solid #e2e8f0;border-radius:10px;background:#fff;color:#1e293b;text-align:center;letter-spacing:3px;font-weight:600}
@@ -103,7 +100,6 @@ input[readonly]{background:#f8fafc;color:#2563eb;font-weight:700;border-color:#e
   </div>
 
   <div id="mainApp" class="hidden">
-    <div id="hoursBanner" class="hours-banner open">Checking hours...</div>
 
     <div class="nav-tabs">
       <div class="nav-tab active" onclick="showTab('send')">Send</div>
@@ -135,13 +131,11 @@ input[readonly]{background:#f8fafc;color:#2563eb;font-weight:700;border-color:#e
       <div class="card">
         <h4>Receive Shipments</h4>
 
-        <!-- DRIVER: Branch Grid -->
         <div id="driverBranchBox" class="hidden">
           <label style="color:#2563eb">DRIVER — Select Branch to Receive</label>
           <div class="branch-grid" id="branchGrid"></div>
         </div>
 
-        <!-- STAFF: Branch Display -->
         <div id="staffBranchBox" class="hidden">
           <label>Receiving For Branch</label>
           <div class="branch-display" id="staffBranchDisplay">-</div>
@@ -197,7 +191,7 @@ input[readonly]{background:#f8fafc;color:#2563eb;font-weight:700;border-color:#e
 </div>
 
 <script>
-const APP_VERSION = "v6-staff-driver";
+const APP_VERSION = "v8-24h";
 let SCRIPT_URL = localStorage.getItem('ncm_url') || "";
 let currentBranch = "";
 let currentRole = "";
@@ -218,8 +212,6 @@ function init() {
     localStorage.removeItem('ncm_session');
     localStorage.setItem('ncm_version', APP_VERSION);
   }
-  updateHoursBanner();
-  setInterval(updateHoursBanner, 60000);
   if (!SCRIPT_URL) {
     document.getElementById('setupBox').classList.remove('hidden');
     return;
@@ -254,24 +246,6 @@ function saveUrl() {
   document.getElementById('setupBox').classList.add('hidden');
   document.getElementById('loginScreen').classList.remove('hidden');
   toast('Saved. Please login.', 'ok');
-}
-
-function updateHoursBanner() {
-  const now = new Date();
-  let h = now.getUTCHours() + 5;
-  let m = now.getUTCMinutes() + 45;
-  if (m >= 60) { m -= 60; h += 1; }
-  const minutes = h * 60 + m;
-  const open = minutes >= 480 && minutes < 960;
-  const banner = document.getElementById('hoursBanner');
-  if (!banner) return;
-  if (open) {
-    banner.className = 'hours-banner open';
-    banner.innerText = 'Business hours: OPEN (8:00 AM – 4:00 PM)';
-  } else {
-    banner.className = 'hours-banner closed';
-    banner.innerText = 'Business hours: CLOSED (Opens 8:00 AM)';
-  }
 }
 
 async function apiGet(params) {
@@ -348,7 +322,6 @@ function showApp() {
     if (driverBranches.length) currentBranch = driverBranches[0];
 
   } else {
-    // BRANCH STAFF
     badge.className = '';
     badge.innerText = '';
     driverBox.classList.add('hidden');
@@ -554,6 +527,8 @@ async function submitBatch() {
       recvQueue = res.notFoundIds || [];
       renderChips('recvChipList', recvQueue, 'Scanned shipment IDs appear here');
       updateRecvBtn();
+      // AUTO-REFRESH pending list after receive
+      fetchPending();
     } else {
       toast(res.error, 'bad');
     }
