@@ -48,6 +48,35 @@ input[readonly]{background:#f8fafc;color:#2563eb;font-weight:700;border-color:#e
 .branch-card.selected{background:#2563eb;border-color:#2563eb;color:#fff;box-shadow:0 2px 8px rgba(37,99,235,0.25)}
 .branch-card .branch-icon{font-size:20px;margin-bottom:4px;display:block}
 .branch-display{background:#f0f9ff;border:2px solid #2563eb;border-radius:10px;padding:14px;text-align:center;font-size:16px;font-weight:800;color:#2563eb;margin-bottom:12px}
+
+/* VAN CARDS — GREEN vs RED */
+.van-card{border-radius:10px;padding:14px;margin-bottom:10px;cursor:pointer;transition:all 0.15s;border:2px solid}
+.van-card.green{background:#dcfce7;border-color:#16a34a;color:#14532d}
+.van-card.red{background:#fee2e2;border-color:#dc2626;color:#7f1d1d}
+.van-card.grey{background:#f1f5f9;border-color:#cbd5e1;color:#475569;cursor:default}
+.van-card.grey:active{transform:none}
+.van-card.offduty{background:#fef3c7;border-color:#ca8a04;color:#78350f;cursor:default}
+.van-card.offduty:active{transform:none}
+.van-card:active{transform:scale(0.98)}
+.van-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.van-title{font-size:16px;font-weight:800}
+.van-timer{font-size:24px;font-weight:800;font-family:monospace;letter-spacing:1px}
+.van-meta{font-size:12px;font-weight:600;opacity:0.8;margin-top:4px}
+
+/* ALL-BRANCH MOVEMENT CARDS — neutral, informational (not "get ready" urgency) */
+.move-card{border-radius:10px;padding:12px 14px;margin-bottom:8px;border:1.5px solid;cursor:default}
+.move-card.moving{background:#eff6ff;border-color:#93c5fd}
+.move-card.moving.late{background:#fff7ed;border-color:#fdba74}
+.move-card.idle{background:#f8fafc;border-color:#e2e8f0}
+.move-card.off-duty{background:#f1f5f9;border-color:#cbd5e1;opacity:0.75}
+.move-route{font-size:14px;font-weight:800;color:#1e293b}
+.move-route .arrow{color:#94a3b8;margin:0 6px;font-weight:400}
+.move-sub{font-size:11px;color:#64748b;font-weight:600;margin-top:3px}
+.move-timer{font-size:13px;font-weight:800;font-family:monospace;float:right}
+.move-timer.late{color:#dc2626}
+.move-timer.ontime{color:#16a34a}
+.move-empty{color:#94a3b8;font-size:12px;text-align:center;padding:12px 0;font-style:italic}
+
 .cam-modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#000;z-index:2000;flex-direction:column}
 .cam-modal.active{display:flex}
 .cam-modal video{width:100%;height:calc(100% - 80px);object-fit:cover}
@@ -104,6 +133,13 @@ input[readonly]{background:#f8fafc;color:#2563eb;font-weight:700;border-color:#e
     <div class="nav-tabs">
       <div class="nav-tab active" onclick="showTab('send')">Send</div>
       <div class="nav-tab" onclick="showTab('receive')">Receive</div>
+      <div class="nav-tab" onclick="showTab('vans')">All Vans</div>
+    </div>
+
+    <!-- ALL VAN MOVEMENTS — visible on every branch, every tab -->
+    <div id="allVansSection" class="hidden mt-10">
+      <h4 style="font-size:13px;font-weight:700;color:#1e293b;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px">🗺️ Van Movements (All Branches)</h4>
+      <div id="allVansList"></div>
     </div>
 
     <div id="sendTab">
@@ -141,6 +177,12 @@ input[readonly]{background:#f8fafc;color:#2563eb;font-weight:700;border-color:#e
           <div class="branch-display" id="staffBranchDisplay">-</div>
         </div>
 
+        <!-- INCOMING VANS -->
+        <div id="incomingVansSection" class="hidden mt-10">
+          <h4 style="font-size:13px;font-weight:700;color:#1e293b;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px">🚐 Incoming Vans</h4>
+          <div id="incomingVansList"></div>
+        </div>
+
         <label>Van Number</label>
         <div class="flex">
           <input type="text" id="recvVanNo" placeholder="e.g. 843" class="flex-1">
@@ -174,6 +216,14 @@ input[readonly]{background:#f8fafc;color:#2563eb;font-weight:700;border-color:#e
       </div>
     </div>
 
+    <!-- ALL VANS — company-wide movement board, visible from every branch -->
+    <div id="vansTab" class="hidden">
+      <div class="card">
+        <h4>🚐 All Van Movement</h4>
+        <div id="allVansList"></div>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -191,7 +241,7 @@ input[readonly]{background:#f8fafc;color:#2563eb;font-weight:700;border-color:#e
 </div>
 
 <script>
-const APP_VERSION = "v8-24h";
+const APP_VERSION = "v10-simple-timer";
 let SCRIPT_URL = localStorage.getItem('ncm_url') || "";
 let currentBranch = "";
 let currentRole = "";
@@ -204,6 +254,8 @@ let barcodeDetector = null;
 let camStream = null;
 let isScanning = false;
 let recvTimer = null;
+let vanTimerInterval = null;
+let vanPollInterval = null;
 const RECV_AUTO_DELAY = 600;
 
 function init() {
@@ -337,6 +389,8 @@ function showApp() {
     destSel.appendChild(opt);
   });
   document.getElementById('originBranchDisplay').value = currentRole === 'driver' ? 'DRIVER' : currentBranch;
+
+  startAllVansPolling(); // runs continuously regardless of Send/Receive tab
 }
 
 function showTab(tab) {
@@ -344,6 +398,11 @@ function showTab(tab) {
   event.target.classList.add('active');
   document.getElementById('sendTab').classList.toggle('hidden', tab !== 'send');
   document.getElementById('receiveTab').classList.toggle('hidden', tab !== 'receive');
+  document.getElementById('vansTab').classList.toggle('hidden', tab !== 'vans');
+  stopVanPolling();
+  stopAllVansPolling();
+  if (tab === 'receive') startVanPolling();
+  else if (tab === 'vans') startAllVansPolling();
 }
 
 function logout() {
@@ -358,6 +417,265 @@ function getActiveBranch() {
   }
   return currentBranch;
 }
+
+/* ===================== INCOMING VANS ===================== */
+
+function startVanPolling() {
+  loadIncomingVans();
+  if (vanPollInterval) clearInterval(vanPollInterval);
+  vanPollInterval = setInterval(loadIncomingVans, 10000);
+}
+
+function stopVanPolling() {
+  if (vanPollInterval) clearInterval(vanPollInterval);
+  if (vanTimerInterval) clearInterval(vanTimerInterval);
+}
+
+async function loadIncomingVans() {
+  const branch = getActiveBranch();
+  if (!branch) return;
+  try {
+    const res = await apiGet({ action: "getIncomingVans", branch: branch });
+    const vans = res.data || [];
+    const section = document.getElementById('incomingVansSection');
+    const list = document.getElementById('incomingVansList');
+    
+    if (vans.length === 0) {
+      section.classList.add('hidden');
+      stopVanTimers();
+      return;
+    }
+    
+    section.classList.remove('hidden');
+    list.innerHTML = vans.map((v, idx) => {
+      const colorClass = v.isLate ? 'red' : 'green';
+      return `
+        <div class="van-card ${colorClass}" onclick="fillVanNo('${v.vanNo}')">
+          <div class="van-header">
+            <span class="van-title">Van ${v.vanNo} from ${v.origin}</span>
+          </div>
+          <div class="van-timer" id="vanTimer_${idx}" data-min="${v.elapsedMinutes}" data-sec="${v.elapsedSeconds}">
+            ${String(v.elapsedMinutes).padStart(2,'0')}:${String(v.elapsedSeconds).padStart(2,'0')}
+          </div>
+          <div class="van-meta">${v.count} shipment(s) coming — Tap to select</div>
+        </div>
+      `;
+    }).join('');
+    
+    startVanTimers(vans);
+  } catch(e) {}
+}
+
+function startVanTimers(vans) {
+  if (vanTimerInterval) clearInterval(vanTimerInterval);
+  vanTimerInterval = setInterval(() => {
+    document.querySelectorAll('.van-timer').forEach((el, idx) => {
+      let min = parseInt(el.dataset.min);
+      let sec = parseInt(el.dataset.sec);
+      sec++;
+      if (sec >= 60) { sec = 0; min++; }
+      el.dataset.min = min;
+      el.dataset.sec = sec;
+      el.innerText = String(min).padStart(2,'0') + ':' + String(sec).padStart(2,'0');
+      
+      // Auto-switch color on frontend if crosses 20 min
+      const card = el.closest('.van-card');
+      if (card) {
+        if (min >= 20) {
+          card.classList.remove('green');
+          card.classList.add('red');
+        } else {
+          card.classList.remove('red');
+          card.classList.add('green');
+        }
+      }
+    });
+  }, 1000);
+}
+
+function stopVanTimers() {
+  if (vanTimerInterval) clearInterval(vanTimerInterval);
+}
+
+function fillVanNo(van) {
+  document.getElementById('recvVanNo').value = van;
+  fetchPending();
+  toast('Van ' + van + ' selected', 'ok');
+}
+
+/* ===================== ALL VANS — company-wide board ===================== */
+
+let allVansPollInterval = null;
+let allVansTimerInterval = null;
+
+function startAllVansPolling() {
+  loadAllVans();
+  if (allVansPollInterval) clearInterval(allVansPollInterval);
+  allVansPollInterval = setInterval(loadAllVans, 10000);
+}
+
+function stopAllVansPolling() {
+  if (allVansPollInterval) clearInterval(allVansPollInterval);
+  if (allVansTimerInterval) clearInterval(allVansTimerInterval);
+}
+
+async function loadAllVans() {
+  try {
+    const res = await apiGet({ action: "getAllVanStatus" });
+    const vans = res.data || [];
+    const list = document.getElementById('allVansList');
+
+    if (vans.length === 0) {
+      list.innerHTML = '<div style="padding:14px;text-align:center;color:#94a3b8;font-size:13px">No van activity yet — this fills in as shipments are sent and received.</div>';
+      return;
+    }
+
+    list.innerHTML = vans.map((v, idx) => {
+      if (v.status === 'MOVING') {
+        const colorClass = v.isLate ? 'red' : 'green';
+        const roundTag = v.isRouteVan ? ` · Round ${v.roundLabel}` : '';
+        return `
+          <div class="van-card ${colorClass}">
+            <div class="van-header">
+              <span class="van-title">Van ${v.vanNo}</span>
+            </div>
+            <div class="van-meta" style="font-size:13px;font-weight:700;margin-bottom:4px">${v.origin} → ${v.destination}${roundTag}</div>
+            <div class="van-timer" id="allVanTimer_${idx}" data-min="${v.elapsedMinutes}" data-sec="${v.elapsedSeconds}">
+              ${String(v.elapsedMinutes).padStart(2,'0')}:${String(v.elapsedSeconds).padStart(2,'0')}
+            </div>
+            <div class="van-meta">Last update: just now (live)</div>
+          </div>
+        `;
+      } else if (v.status === 'OFF_DUTY') {
+        return `
+          <div class="van-card offduty">
+            <div class="van-header"><span class="van-title">Van ${v.vanNo}</span></div>
+            <div class="van-meta">Off duty for today — parked at ${v.parkedAt}</div>
+          </div>
+        `;
+      } else {
+        return `
+          <div class="van-card grey">
+            <div class="van-header"><span class="van-title">Van ${v.vanNo}</span></div>
+            <div class="van-meta">Idle — parked at ${v.parkedAt}</div>
+          </div>
+        `;
+      }
+    }).join('');
+
+    startAllVansTimers();
+  } catch(e) {}
+}
+
+function startAllVansTimers() {
+  if (allVansTimerInterval) clearInterval(allVansTimerInterval);
+  allVansTimerInterval = setInterval(() => {
+    document.querySelectorAll('#allVansList .van-timer').forEach(el => {
+      let min = parseInt(el.dataset.min);
+      let sec = parseInt(el.dataset.sec);
+      sec++;
+      if (sec >= 60) { sec = 0; min++; }
+      el.dataset.min = min;
+      el.dataset.sec = sec;
+      el.innerText = String(min).padStart(2,'0') + ':' + String(sec).padStart(2,'0');
+
+      const card = el.closest('.van-card');
+      if (card) {
+        if (min >= 20) { card.classList.remove('green'); card.classList.add('red'); }
+        else { card.classList.remove('red'); card.classList.add('green'); }
+      }
+    });
+  }, 1000);
+}
+
+/* ===================== ALL VAN MOVEMENTS (every branch, always visible) ===================== */
+
+let allVansPollInterval = null;
+let allVansTickInterval = null;
+
+function startAllVansPolling() {
+  loadAllVans();
+  if (allVansPollInterval) clearInterval(allVansPollInterval);
+  if (allVansTickInterval) clearInterval(allVansTickInterval);
+  allVansPollInterval = setInterval(loadAllVans, 10000); // resync with server every 10s
+  allVansTickInterval = setInterval(tickAllVansTimers, 1000); // smooth local count-up every 1s
+}
+
+async function loadAllVans() {
+  try {
+    const res = await apiGet({ action: "getAllVans" });
+    const vans = res.data || [];
+    const section = document.getElementById('allVansSection');
+    const list = document.getElementById('allVansList');
+
+    if (vans.length === 0) {
+      section.classList.remove('hidden');
+      list.innerHTML = '<div class="move-empty">No van activity yet — this fills in as shipments are sent.</div>';
+      return;
+    }
+
+    section.classList.remove('hidden');
+
+    // Moving vans first (the useful live info), idle/off-duty after.
+    const sorted = [...vans].sort((a, b) => {
+      if (a.status === 'moving' && b.status !== 'moving') return -1;
+      if (a.status !== 'moving' && b.status === 'moving') return 1;
+      return 0;
+    });
+
+    list.innerHTML = sorted.map(v => {
+      if (v.status === 'moving') {
+        const lateClass = v.isLate ? 'late' : '';
+        return `
+          <div class="move-card moving ${lateClass}" data-depart-min="${v.elapsedMinutes}" data-depart-sec="${v.elapsedSeconds}">
+            <span class="move-timer ${v.isLate ? 'late' : 'ontime'}">${String(v.elapsedMinutes).padStart(2,'0')}:${String(v.elapsedSeconds).padStart(2,'0')}</span>
+            <div class="move-route">Van ${v.vanNo}: ${v.fromBranch}<span class="arrow">→</span>${v.toBranch}</div>
+            <div class="move-sub">${v.roundLabel ? 'Round ' + v.roundLabel + ' · ' : ''}${v.isLate ? 'Running long' : 'On schedule'}</div>
+          </div>
+        `;
+      } else if (v.status === 'off_duty') {
+        return `
+          <div class="move-card off-duty">
+            <div class="move-route">Van ${v.vanNo}</div>
+            <div class="move-sub">Off duty for today — parked at ${v.lastLocation}</div>
+          </div>
+        `;
+      } else {
+        return `
+          <div class="move-card idle">
+            <div class="move-route">Van ${v.vanNo}</div>
+            <div class="move-sub">Idle — parked at ${v.lastLocation}</div>
+          </div>
+        `;
+      }
+    }).join('');
+  } catch(e) {}
+}
+
+function tickAllVansTimers() {
+  document.querySelectorAll('.move-card[data-depart-min]').forEach(card => {
+    let min = parseInt(card.getAttribute('data-depart-min'), 10);
+    let sec = parseInt(card.getAttribute('data-depart-sec'), 10);
+    sec++;
+    if (sec >= 60) { sec = 0; min++; }
+    card.setAttribute('data-depart-min', min);
+    card.setAttribute('data-depart-sec', sec);
+
+    const timerEl = card.querySelector('.move-timer');
+    if (timerEl) timerEl.innerText = String(min).padStart(2,'0') + ':' + String(sec).padStart(2,'0');
+
+    // Re-derive the late/on-time visual every second, same 20-min rule
+    // the backend uses, so it flips color live without waiting on a poll.
+    const isLate = min >= 20;
+    card.classList.toggle('late', isLate);
+    if (timerEl) {
+      timerEl.classList.toggle('late', isLate);
+      timerEl.classList.toggle('ontime', !isLate);
+    }
+  });
+}
+
+/* ===================== CHIPS ===================== */
 
 function renderChips(containerId, queue, placeholder) {
   const box = document.getElementById(containerId);
@@ -409,6 +727,8 @@ function updateRecvBtn() {
   document.getElementById('recvBtnCount').innerText = recvQueue.length;
   btn.disabled = recvQueue.length === 0;
 }
+
+/* ===================== SEND ===================== */
 
 function handleSendInput(el) {
   const val = el.value;
@@ -466,6 +786,8 @@ async function sendShipments() {
     }
   } catch(e) { toast('Network error', 'bad'); }
 }
+
+/* ===================== RECEIVE ===================== */
 
 function handleRecvInput(el) {
   const val = el.value;
@@ -527,8 +849,8 @@ async function submitBatch() {
       recvQueue = res.notFoundIds || [];
       renderChips('recvChipList', recvQueue, 'Scanned shipment IDs appear here');
       updateRecvBtn();
-      // AUTO-REFRESH pending list after receive
       fetchPending();
+      loadIncomingVans();
     } else {
       toast(res.error, 'bad');
     }
@@ -564,9 +886,14 @@ async function receiveAllSheet() {
   try {
     const res = await apiPost({ action: "receiveAll", branch: branch, vanNo: van });
     toast(res.message, res.success ? 'ok' : 'bad');
-    if (res.success) fetchPending();
+    if (res.success) {
+      fetchPending();
+      loadIncomingVans();
+    }
   } catch(e) { toast('Error', 'bad'); }
 }
+
+/* ===================== CAMERA ===================== */
 
 async function initDetector() {
   if ('BarcodeDetector' in window) {
