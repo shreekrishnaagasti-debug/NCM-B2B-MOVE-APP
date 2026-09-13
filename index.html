@@ -1,953 +1,990 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>NCM B2B Tracker</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:Segoe UI,Arial,sans-serif;background:#f8fafc;color:#1e293b;min-height:100vh;padding-bottom:80px}
-.header{background:#fff;padding:16px 20px;text-align:center;border-bottom:1px solid #e2e8f0;box-shadow:0 1px 3px rgba(0,0,0,0.05)}
-.header h1{font-size:20px;color:#dc2626;font-weight:800;letter-spacing:0.5px}
-.header p{font-size:11px;color:#64748b;margin-top:2px}
-.container{padding:15px;max-width:520px;margin:0 auto}
-.login-box{background:#fff;border-radius:14px;padding:28px 20px;margin-top:20px;border:1px solid #e2e8f0;box-shadow:0 1px 3px rgba(0,0,0,0.04)}
-.login-box h2{text-align:center;color:#1e293b;margin-bottom:20px;font-size:18px;font-weight:700}
-.login-box input{width:100%;padding:14px;font-size:18px;border:2px solid #e2e8f0;border-radius:10px;background:#fff;color:#1e293b;text-align:center;letter-spacing:3px;font-weight:600}
-.login-box input:focus{outline:none;border-color:#dc2626}
-.btn{width:100%;padding:14px;font-size:15px;font-weight:700;border:none;border-radius:10px;cursor:pointer;transition:all 0.15s;text-transform:uppercase;letter-spacing:0.3px}
-.btn:active{transform:scale(0.98)}
-.btn-red{background:#dc2626;color:#fff}.btn-red:hover{background:#b91c1c}
-.btn-blue{background:#2563eb;color:#fff}.btn-blue:hover{background:#1d4ed8}
-.btn-green{background:#16a34a;color:#fff}.btn-green:hover{background:#15803d}
-.btn-grey{background:#f1f5f9;color:#475569;border:1px solid #cbd5e1}.btn-grey:hover{background:#e2e8f0}
-.btn-small{padding:8px 14px;font-size:12px;width:auto}
-.nav-tabs{display:flex;gap:6px;margin-bottom:15px;background:#fff;padding:4px;border-radius:10px;border:1px solid #e2e8f0}
-.nav-tab{flex:1;padding:10px;text-align:center;background:transparent;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;color:#64748b;border:none}
-.nav-tab.active{background:#dc2626;color:#fff}
-.card{background:#fff;border-radius:12px;padding:16px;margin-top:12px;border:1px solid #e2e8f0;box-shadow:0 1px 2px rgba(0,0,0,0.03)}
-.card h4{color:#1e293b;margin-bottom:12px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px}
-label{display:block;color:#64748b;font-size:12px;margin-bottom:5px;font-weight:600}
-input,select{width:100%;padding:11px;font-size:15px;border:1.5px solid #e2e8f0;border-radius:8px;background:#fff;color:#1e293b}
-input:focus,select:focus{outline:none;border-color:#dc2626}
-input[readonly]{background:#f8fafc;color:#2563eb;font-weight:700;border-color:#e2e8f0}
-.scan-big{width:100%;padding:28px;font-size:18px;font-weight:800;border:none;border-radius:14px;cursor:pointer;background:#16a34a;color:#fff;text-transform:uppercase;letter-spacing:0.5px;box-shadow:0 4px 14px rgba(22,163,74,0.25);display:flex;align-items:center;justify-content:center;gap:10px;margin-top:10px}
-.scan-big:hover{background:#15803d;transform:translateY(-1px)}
-.scan-big:active{transform:scale(0.98)}
-.chip-box{background:#fff;border:1.5px solid #e2e8f0;border-radius:10px;padding:12px;min-height:56px;margin-top:10px;position:relative}
-.chip-box:focus-within{border-color:#dc2626}
-.chip-list{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-.chip{background:#f1f5f9;border:1px solid #cbd5e1;border-radius:20px;padding:6px 10px 6px 14px;display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:#1e293b;animation:popIn 0.15s ease}
-.chip .x{background:#cbd5e1;border:none;border-radius:50%;width:18px;height:18px;color:#fff;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;font-weight:700}
-.chip .x:hover{background:#dc2626}
-.chip-placeholder{color:#94a3b8;font-size:13px;font-style:italic}
-@keyframes popIn{from{transform:scale(0.8);opacity:0}to{transform:scale(1);opacity:1}}
-.branch-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
-.branch-card{background:#fff;border:2px solid #e2e8f0;border-radius:10px;padding:14px 6px;text-align:center;cursor:pointer;transition:all 0.15s;font-size:13px;font-weight:700;color:#475569}
-.branch-card:active{transform:scale(0.96)}
-.branch-card.selected{background:#2563eb;border-color:#2563eb;color:#fff;box-shadow:0 2px 8px rgba(37,99,235,0.25)}
-.branch-card .branch-icon{font-size:20px;margin-bottom:4px;display:block}
-.branch-display{background:#f0f9ff;border:2px solid #2563eb;border-radius:10px;padding:14px;text-align:center;font-size:16px;font-weight:800;color:#2563eb;margin-bottom:12px}
-
-/* VAN CARDS — GREEN vs RED */
-.van-card{border-radius:10px;padding:14px;margin-bottom:10px;cursor:pointer;transition:all 0.15s;border:2px solid}
-.van-card.green{background:#dcfce7;border-color:#16a34a;color:#14532d}
-.van-card.red{background:#fee2e2;border-color:#dc2626;color:#7f1d1d}
-.van-card.grey{background:#f1f5f9;border-color:#cbd5e1;color:#475569;cursor:default}
-.van-card.grey:active{transform:none}
-.van-card.offduty{background:#fef3c7;border-color:#ca8a04;color:#78350f;cursor:default}
-.van-card.offduty:active{transform:none}
-.van-card:active{transform:scale(0.98)}
-.van-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
-.van-title{font-size:16px;font-weight:800}
-.van-timer{font-size:24px;font-weight:800;font-family:monospace;letter-spacing:1px}
-.van-meta{font-size:12px;font-weight:600;opacity:0.8;margin-top:4px}
-
-/* ALL-BRANCH MOVEMENT CARDS */
-.move-card{border-radius:10px;padding:12px 14px;margin-bottom:8px;border:1.5px solid;cursor:default}
-.move-card.moving{background:#eff6ff;border-color:#93c5fd}
-.move-card.moving.late{background:#fff7ed;border-color:#fdba74}
-.move-card.idle{background:#f8fafc;border-color:#e2e8f0}
-.move-card.off-duty{background:#f1f5f9;border-color:#cbd5e1;opacity:0.75}
-.move-route{font-size:14px;font-weight:800;color:#1e293b}
-.move-route .arrow{color:#94a3b8;margin:0 6px;font-weight:400}
-.move-sub{font-size:11px;color:#64748b;font-weight:600;margin-top:3px}
-.move-timer{font-size:13px;font-weight:800;font-family:monospace;float:right}
-.move-timer.late{color:#dc2626}
-.move-timer.ontime{color:#16a34a}
-.move-empty{color:#94a3b8;font-size:12px;text-align:center;padding:12px 0;font-style:italic}
-
-.cam-modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#000;z-index:2000;flex-direction:column}
-.cam-modal.active{display:flex}
-.cam-modal video{width:100%;height:calc(100% - 80px);object-fit:cover}
-.cam-bar{height:80px;background:#111;display:flex;align-items:center;justify-content:center;gap:20px;padding:0 20px}
-.cam-bar button{padding:12px 24px;font-size:14px;font-weight:700;border:none;border-radius:10px;cursor:pointer}
-.cam-done{background:#dc2626;color:#fff}
-.pending-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
-.pending-count{font-size:28px;font-weight:800;color:#2563eb}
-.shipment-list{background:#fff;border-radius:10px;border:1px solid #e2e8f0;max-height:220px;overflow-y:auto}
-.shipment-item{padding:10px 14px;border-bottom:1px solid #f1f5f9;display:flex;justify-content:space-between;align-items:center}
-.shipment-item:last-child{border-bottom:none}
-.shipment-id{font-weight:700;color:#1e293b;font-size:14px}
-.shipment-meta{font-size:11px;color:#64748b;margin-top:1px}
-.toast{position:fixed;top:15px;left:50%;transform:translateX(-50%);padding:14px 22px;border-radius:10px;font-weight:700;z-index:3000;display:none;font-size:13px;box-shadow:0 4px 12px rgba(0,0,0,0.15);max-width:90%;text-align:center}
-.toast.ok{background:#16a34a;color:#fff}.toast.bad{background:#dc2626;color:#fff}.toast.warn{background:#ca8a04;color:#fff}
-.status-bar{position:fixed;bottom:0;left:0;right:0;background:#fff;padding:10px 16px;border-top:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center;font-size:12px;z-index:100}
-.status-bar .branch{color:#dc2626;font-weight:800}
-.driver-badge{background:#2563eb;color:#fff;font-size:10px;font-weight:800;padding:2px 8px;border-radius:4px;text-transform:uppercase;margin-left:6px}
-.reset-btn{position:fixed;top:10px;right:10px;z-index:500;background:#fee2e2;color:#991b1b;border:1px solid #fecaca;padding:6px 12px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer}
-.hidden{display:none!important}
-.mt-10{margin-top:10px}.mt-15{margin-top:15px}.flex{display:flex;gap:8px}.flex-1{flex:1}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>NCM Branch Operations</title>
+  <style>
+    :root{--red:#dc2626;--blue:#2563eb;--green:#16a34a;--ink:#172033;--muted:#64748b;--line:#e2e8f0;--soft:#f8fafc}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--soft);color:var(--ink);min-height:100vh;padding-bottom:76px}
+    button,input,select,textarea{font:inherit}
+    button{cursor:pointer}
+    .header{position:relative;background:#fff;border-bottom:1px solid var(--line);padding:17px 18px;text-align:center}
+    .header h1{font-size:20px;color:var(--red);letter-spacing:.4px}
+    .header p{font-size:11px;color:var(--muted);margin-top:3px}
+    .clock{position:absolute;right:12px;top:13px;color:var(--blue);font:800 12px monospace;text-align:right}
+    .clock small{display:block;color:var(--muted);font:600 9px Segoe UI,Arial}
+    .container{max-width:620px;margin:auto;padding:14px}
+    .hidden{display:none!important}
+    .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:12px;box-shadow:0 2px 7px #0f172a08}
+    .card h2,.card h3,.card h4{margin-bottom:11px}
+    .card h3{font-size:15px}.card h4{font-size:13px;text-transform:uppercase;letter-spacing:.4px}
+    .muted{color:var(--muted);font-size:12px;line-height:1.45}
+    label{display:block;color:var(--muted);font-weight:700;font-size:12px;margin:11px 0 5px}
+    input,select,textarea{width:100%;border:1.5px solid var(--line);border-radius:9px;padding:11px;background:#fff;color:var(--ink);font-size:14px}
+    input:focus,select:focus,textarea:focus{outline:0;border-color:var(--blue);box-shadow:0 0 0 3px #2563eb18}
+    textarea{min-height:86px;resize:vertical}
+    .btn{border:0;border-radius:9px;padding:12px 14px;font-size:13px;font-weight:800;transition:.15s}
+    .btn:active{transform:scale(.98)}
+    .btn:disabled{opacity:.5;cursor:not-allowed}
+    .btn-full{width:100%}
+    .btn-red{background:var(--red);color:#fff}
+    .btn-blue{background:var(--blue);color:#fff}
+    .btn-green{background:var(--green);color:#fff}
+    .btn-grey{background:#f1f5f9;color:#334155;border:1px solid #cbd5e1}
+    .btn-outline{background:#fff;color:var(--red);border:1.5px solid var(--red)}
+    .mt{margin-top:10px}
+    .row{display:flex;gap:9px;align-items:end}
+    .grow{flex:1}
+    .login{max-width:390px;margin:30px auto}
+    .login h2{text-align:center;font-size:19px}
+    .login input{text-align:center;font-size:20px;letter-spacing:4px}
+    .tabs{display:flex;gap:5px;background:#fff;border:1px solid var(--line);padding:4px;border-radius:11px;margin-bottom:13px}
+    .tab{flex:1;border:0;background:transparent;color:var(--muted);border-radius:8px;padding:10px 5px;font-size:12px;font-weight:800}
+    .tab.active{background:var(--red);color:#fff}
+    .topbar{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:12px}
+    .identity{font-size:12px;color:var(--muted)}
+    .identity b{color:var(--red);font-size:14px}
+    .announcement{border:1px solid #fed7aa;background:#fff7ed;border-left:5px solid #f97316;border-radius:10px;padding:12px;margin:9px 0}
+    .announcement .a-head{display:flex;justify-content:space-between;gap:8px;font-size:12px;font-weight:800;color:#9a3412}
+    .announcement .a-body{font-size:14px;line-height:1.45;margin-top:7px;white-space:pre-wrap}
+    .announcement .a-foot{font-size:10px;color:#78716c;margin-top:8px}
+    .empty{text-align:center;color:#94a3b8;padding:18px 8px;font-size:13px}
+    .branch-contact{border:1px solid var(--line);border-radius:11px;padding:12px;margin:9px 0;background:#fff}
+    .branch-contact h4{font-size:14px;color:var(--blue);margin-bottom:6px}
+    .contact-line{font-size:13px;margin-top:4px}
+    .contact-line a{color:var(--blue);font-weight:700;text-decoration:none}
+    .badge{display:inline-block;border-radius:999px;padding:3px 8px;font-size:10px;font-weight:800;background:#dbeafe;color:#1d4ed8}
+    .badge.green{background:#dcfce7;color:#166534}
+    .badge.red{background:#fee2e2;color:#991b1b}
+    .badge.orange{background:#ffedd5;color:#9a3412}
+    .driver-status{border-radius:12px;padding:15px;background:#eff6ff;border:1.5px solid #93c5fd;margin-top:12px}
+    .driver-status.moving{background:#f0fdf4;border-color:#86efac}
+    .driver-status h3{font-size:18px;margin-bottom:5px}
+    .timer{font:800 27px monospace;color:var(--blue);margin:10px 0}
+    .moving .timer{color:var(--green)}
+    .branch-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px}
+    .branch-choice{background:#fff;border:2px solid var(--line);border-radius:10px;padding:13px 6px;color:#475569;font-size:12px;font-weight:800}
+    .branch-choice.selected{background:var(--blue);border-color:var(--blue);color:#fff}
+    .toast{position:fixed;z-index:20;top:15px;left:50%;transform:translateX(-50%);display:none;max-width:90%;padding:12px 18px;border-radius:9px;color:#fff;font-weight:800;font-size:13px;box-shadow:0 5px 18px #0003;text-align:center}
+    .toast.ok{background:var(--green)}
+    .toast.bad{background:var(--red)}
+    .toast.warn{background:#ca8a04}
+    .bottom{position:fixed;z-index:10;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);padding:10px 14px;display:flex;justify-content:space-between;align-items:center;font-size:12px}
+    .bottom b{color:var(--red)}
+    .build{position:fixed;bottom:4px;right:5px;color:#cbd5e1;font:9px monospace}
+    @media(max-width:420px){
+      .clock{position:static;text-align:center;margin-top:6px}
+      .row{flex-direction:column;align-items:stretch}
+      .row .btn{width:100%}
+    }
+  </style>
 </head>
 <body>
+  <header class="header">
+    <h1>NCM BRANCH OPERATIONS</h1>
+    <p>Announcements · Branch contacts · Driver check-out</p>
+    <div class="clock" id="clock">--:--:--<small>--/--/----</small></div>
+  </header>
 
-<button class="reset-btn" onclick="hardReset()">🔄 Reset App</button>
+  <div id="toast" class="toast"></div>
 
-<div class="header">
-  <h1>NCM B2B TRACKER</h1>
-  <p>Scan · Send · Receive · Live</p>
-</div>
-<div class="toast" id="toast"></div>
+  <main class="container">
+    <section id="setupCard" class="card hidden">
+      <h3>First-time setup</h3>
+      <p class="muted">Paste the deployed Google Apps Script URL ending in <b>/exec</b>.</p>
+      <input id="scriptUrl" placeholder="https://script.google.com/macros/s/.../exec">
+      <button class="btn btn-blue btn-full mt" onclick="saveUrl()">Save and continue</button>
+    </section>
 
-<div class="container">
+    <section id="loginScreen" class="card login hidden">
+      <h2>Branch / Driver Login</h2>
+      <p class="muted" style="text-align:center">Use your assigned passcode.</p>
 
-  <div class="card hidden" id="setupBox">
-    <h4>First-Time Setup</h4>
-    <p style="font-size:13px;color:#64748b;margin-bottom:10px">Paste your Apps Script Web App URL (ends in /exec)</p>
-    <input type="text" id="scriptUrlInput" placeholder="https://script.google.com/macros/s/XXXX/exec">
-    <button class="btn btn-blue mt-10" onclick="saveUrl()">Save & Continue</button>
-  </div>
+      <input id="passcode"
+             type="password"
+             inputmode="numeric"
+             maxlength="12"
+             placeholder="Passcode"
+             onkeydown="if(event.key==='Enter') login()">
 
-  <div id="loginScreen" class="hidden">
-    <div class="login-box">
-      <h2>Branch Login</h2>
-      <input type="password" id="passcodeInput" placeholder="0000" maxlength="10" onkeydown="if(event.key==='Enter')login()">
-      <button class="btn btn-red mt-10" onclick="login()">Login</button>
-      <p style="text-align:center;margin-top:10px;font-size:12px;color:#64748b">Driver passcode: <b>7777</b></p>
-    </div>
-  </div>
+      <button class="btn btn-red btn-full mt" onclick="login()">Login</button>
+    </section>
 
-  <div id="mainApp" class="hidden">
-
-    <div class="nav-tabs">
-      <button class="nav-tab active" onclick="showTab('send',this)">Send</button>
-      <button class="nav-tab" onclick="showTab('receive',this)">Receive</button>
-      <button class="nav-tab" onclick="showTab('vans',this)">All Vans</button>
-    </div>
-
-    <!-- ALWAYS-VISIBLE: all van movements strip (Send + Receive tabs) -->
-    <div id="allVansSection" class="hidden mt-10">
-      <h4 style="font-size:13px;font-weight:700;color:#1e293b;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px">🗺️ Van Movements (All Branches)</h4>
-      <div id="allVansMoveList"></div>
-    </div>
-
-    <div id="sendTab">
-      <div class="card">
-        <h4>Send Shipment</h4>
-        <label>Origin Branch</label>
-        <input type="text" id="originBranchDisplay" readonly>
-        <label>Destination Branch</label>
-        <select id="destBranch"></select>
-        <label>Van Number</label>
-        <input type="text" id="sendVanNo" placeholder="e.g. 843">
-        <label>Shipment IDs <span style="font-weight:400;color:#94a3b8">— scan as fast as you want</span></label>
-        <div class="chip-box" onclick="document.getElementById('sendInput').focus()">
-          <div class="chip-list" id="sendChipList">
-            <span class="chip-placeholder">Scan or paste shipment IDs here</span>
-          </div>
-          <textarea id="sendInput" style="position:absolute;opacity:0;height:0;width:0;left:0;top:0" oninput="handleSendInput(this)" onkeydown="sendKey(event)" onpaste="sendPaste(event)"></textarea>
+    <section id="app" class="hidden">
+      <div class="topbar">
+        <div class="identity">
+          Signed in as <b id="identity">-</b><br>
+          <span id="role">-</span>
         </div>
-        <button class="scan-big" onclick="openCamera('send')">📷 Scan Barcodes</button>
+        <button class="btn btn-grey" onclick="logout()">Logout</button>
       </div>
-      <button class="btn btn-red mt-10" onclick="sendShipments()">SEND ALL (<span id="sendCount">0</span>)</button>
-    </div>
 
-    <div id="receiveTab" class="hidden">
-      <div class="card">
-        <h4>Receive Shipments</h4>
+      <nav class="tabs">
+        <button class="tab active" id="tabDashboard" onclick="showTab('dashboard')">
+          Announcements
+        </button>
 
-        <div id="driverBranchBox" class="hidden">
-          <label style="color:#2563eb">DRIVER — Select Branch to Receive</label>
-          <div class="branch-grid" id="branchGrid"></div>
-        </div>
+        <button class="tab" id="tabContacts" onclick="showTab('contacts')">
+          Contacts
+        </button>
 
-        <div id="staffBranchBox" class="hidden">
-          <label>Receiving For Branch</label>
-          <div class="branch-display" id="staffBranchDisplay">-</div>
-        </div>
+        <button class="tab hidden" id="tabDriver" onclick="showTab('driver')">
+          Driver
+        </button>
+      </nav>
 
-        <!-- INCOMING VANS -->
-        <div id="incomingVansSection" class="hidden mt-10">
-          <h4 style="font-size:13px;font-weight:700;color:#1e293b;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px">🚐 Incoming Vans</h4>
-          <div id="incomingVansList"></div>
-        </div>
-
-        <label>Van Number</label>
-        <div class="flex">
-          <input type="text" id="recvVanNo" placeholder="e.g. 843" class="flex-1">
-          <button class="btn btn-blue btn-small" onclick="fetchPending()">Load List</button>
-        </div>
-        <button class="scan-big" onclick="openCamera('receive')">📷 Scan Barcodes</button>
-        <div style="margin-top:12px">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-            <label style="margin:0">Scanned IDs <span style="font-weight:400;color:#94a3b8">— auto-sends after you pause</span></label>
-            <span style="font-size:12px;color:#64748b;font-weight:700" id="scanCount">0 items</span>
-          </div>
-          <div class="chip-box" style="min-height:70px" onclick="document.getElementById('recvInput').focus()">
-            <div class="chip-list" id="recvChipList">
-              <span class="chip-placeholder">Scanned shipment IDs appear here</span>
-            </div>
-            <textarea id="recvInput" style="position:absolute;opacity:0;height:0;width:0;left:0;top:0" oninput="handleRecvInput(this)" onkeydown="recvKey(event)" onpaste="recvPaste(event)"></textarea>
-          </div>
-        </div>
-        <button class="btn btn-grey mt-10" onclick="fetchPending()" style="padding:10px;font-size:12px">↻ Fetch Pending List from Sheet</button>
-      </div>
-      <button class="btn btn-green mt-10" id="recvBatchBtn" onclick="submitBatch()" disabled>RECEIVE ALL SCANNED (<span id="recvBtnCount">0</span>)</button>
-      <div id="pendingSection" class="hidden mt-15">
+      <section id="dashboardTab">
         <div class="card">
-          <div class="pending-header">
-            <h4 style="margin:0">Pending in Sheet</h4>
-            <div class="pending-count" id="pendingCount">0</div>
+          <h3>📢 Today’s branch announcements</h3>
+          <p class="muted">
+            Announcements stay visible for 24 hours, then disappear automatically.
+          </p>
+
+          <div id="announcementList">
+            <div class="empty">Loading announcements…</div>
           </div>
-          <div class="shipment-list" id="shipmentList"></div>
-          <button class="btn btn-blue mt-10" onclick="receiveAllSheet()" style="font-size:13px">Receive All from Sheet</button>
         </div>
-      </div>
-    </div>
 
-    <!-- ALL VANS TAB — company-wide board with large van cards -->
-    <div id="vansTab" class="hidden">
-      <div class="card">
-        <h4>🚐 All Van Movement</h4>
-        <div id="vansTabList"></div>
-      </div>
-    </div>
+        <div id="announcementFormCard" class="card">
+          <h3>Post an announcement</h3>
+          <p class="muted">
+            This message will expire automatically after 24 hours.
+          </p>
 
-  </div>
-</div>
+          <label>Branch</label>
+          <select id="announcementBranch"></select>
 
-<div class="status-bar hidden" id="statusBar">
-  <span>Branch: <span class="branch" id="userBranch">-</span><span id="roleBadge"></span></span>
-  <button class="btn btn-grey btn-small" onclick="logout()">Logout</button>
-</div>
+          <label>Message</label>
+          <textarea
+            id="announcementMessage"
+            maxlength="500"
+            placeholder="Example: B2B desk is handled by Ram today until 6 PM."
+          ></textarea>
 
-<div class="cam-modal" id="camModal">
-  <video id="camVideo" autoplay playsinline muted></video>
-  <canvas id="camCanvas" style="display:none"></canvas>
-  <div class="cam-bar">
-    <button class="cam-done" onclick="closeCamera()">✕ Done Scanning</button>
-  </div>
-</div>
-
-<script>
-const APP_VERSION = "v10-simple-timer";
-let SCRIPT_URL = localStorage.getItem('ncm_url') || "";
-let currentBranch = "";
-let currentRole = "";
-let currentDestinations = [];
-let driverBranches = [];
-let scanMode = "";
-let sendQueue = [];
-let recvQueue = [];
-let barcodeDetector = null;
-let camStream = null;
-let isScanning = false;
-let recvTimer = null;
-const RECV_AUTO_DELAY = 600;
-
-/* ===================== POLL + TICK INTERVALS =====================
-   Four separate interval handles — NO duplicates:
-   vanPollInterval    : fetch incoming vans from server (Receive tab)
-   vanTickInterval    : tick incoming-van timers every second
-   allVansPollInterval: fetch all-van movements from server (Send strip + Vans tab)
-   allVansTickInterval: tick all-van timers every second
-*/
-let vanPollInterval    = null;
-let vanTickInterval    = null;
-let allVansPollInterval = null;
-let allVansTickInterval = null;
-
-/* ===================== INIT ===================== */
-
-function init() {
-  const savedVersion = localStorage.getItem('ncm_version');
-  if (savedVersion !== APP_VERSION) {
-    localStorage.removeItem('ncm_session');
-    localStorage.setItem('ncm_version', APP_VERSION);
-  }
-  if (!SCRIPT_URL) {
-    document.getElementById('setupBox').classList.remove('hidden');
-    return;
-  }
-  const sess = localStorage.getItem('ncm_session');
-  if (sess) {
-    try {
-      const s = JSON.parse(sess);
-      currentBranch = s.branch || "";
-      currentRole = s.role || "branch";
-      currentDestinations = s.destinations || [];
-      driverBranches = s.branches || [];
-      showApp();
-      return;
-    } catch(e){ localStorage.removeItem('ncm_session'); }
-  }
-  document.getElementById('loginScreen').classList.remove('hidden');
-}
-
-function hardReset() {
-  if (confirm("Reset everything? You will need to enter the URL and login again.")) {
-    localStorage.clear();
-    location.reload();
-  }
-}
-
-function saveUrl() {
-  const url = document.getElementById('scriptUrlInput').value.trim();
-  if (!url.includes('/exec')) return toast('URL must end in /exec', 'bad');
-  localStorage.setItem('ncm_url', url);
-  SCRIPT_URL = url;
-  document.getElementById('setupBox').classList.add('hidden');
-  document.getElementById('loginScreen').classList.remove('hidden');
-  toast('Saved. Please login.', 'ok');
-}
-
-async function apiGet(params) {
-  const res = await fetch(SCRIPT_URL + "?" + new URLSearchParams(params));
-  return res.json();
-}
-async function apiPost(body) {
-  const res = await fetch(SCRIPT_URL, {
-    method: "POST",
-    headers: { "Content-Type": "text/plain;charset=utf-8" },
-    body: JSON.stringify(body)
-  });
-  return res.json();
-}
-
-async function login() {
-  const pc = document.getElementById('passcodeInput').value.trim();
-  if (!pc) return toast('Enter passcode', 'bad');
-  try {
-    const res = await apiGet({ action: "login", passcode: pc });
-    if (res.success) {
-      currentRole = res.role;
-      if (res.role === 'branch') {
-        currentBranch = res.branch;
-        currentDestinations = res.destinations || [];
-      } else if (res.role === 'driver') {
-        currentBranch = "";
-        driverBranches = res.branches || [];
-      }
-      localStorage.setItem('ncm_session', JSON.stringify({
-        branch: currentBranch, role: currentRole,
-        destinations: currentDestinations, branches: driverBranches
-      }));
-      showApp();
-      toast('Welcome ' + (currentBranch || 'Driver'), 'ok');
-    } else {
-      toast(res.error, 'bad');
-    }
-  } catch(e) { toast('Network error', 'bad'); }
-}
-
-function showApp() {
-  document.getElementById('loginScreen').classList.add('hidden');
-  document.getElementById('mainApp').classList.remove('hidden');
-  document.getElementById('statusBar').classList.remove('hidden');
-  document.getElementById('userBranch').innerText = currentBranch || 'DRIVER';
-
-  const badge = document.getElementById('roleBadge');
-  const driverBox = document.getElementById('driverBranchBox');
-  const staffBox = document.getElementById('staffBranchBox');
-
-  if (currentRole === 'driver') {
-    badge.className = 'driver-badge';
-    badge.innerText = 'DRIVER';
-    driverBox.classList.remove('hidden');
-    staffBox.classList.add('hidden');
-    const grid = document.getElementById('branchGrid');
-    grid.innerHTML = "";
-    driverBranches.forEach((b, idx) => {
-      const div = document.createElement('div');
-      div.className = 'branch-card' + (idx === 0 ? ' selected' : '');
-      div.innerHTML = '<span class="branch-icon">🏢</span>' + b;
-      div.onclick = function() {
-        document.querySelectorAll('.branch-card').forEach(c => c.classList.remove('selected'));
-        div.classList.add('selected');
-        currentBranch = b;
-        toast('Receiving for: ' + b, 'ok');
-      };
-      grid.appendChild(div);
-    });
-    if (driverBranches.length) currentBranch = driverBranches[0];
-  } else {
-    badge.className = '';
-    badge.innerText = '';
-    driverBox.classList.add('hidden');
-    staffBox.classList.remove('hidden');
-    document.getElementById('staffBranchDisplay').innerText = currentBranch;
-  }
-
-  const destSel = document.getElementById('destBranch');
-  destSel.innerHTML = "";
-  currentDestinations.forEach(d => {
-    const opt = document.createElement('option');
-    opt.value = d; opt.innerText = d;
-    destSel.appendChild(opt);
-  });
-  document.getElementById('originBranchDisplay').value = currentRole === 'driver' ? 'DRIVER' : currentBranch;
-
-  // Start the always-visible movements strip immediately
-  startAllVansPolling();
-}
-
-function showTab(tab, el) {
-  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById('sendTab').classList.toggle('hidden', tab !== 'send');
-  document.getElementById('receiveTab').classList.toggle('hidden', tab !== 'receive');
-  document.getElementById('vansTab').classList.toggle('hidden', tab !== 'vans');
-
-  // Stop incoming-van polling when leaving Receive tab
-  stopVanPolling();
-
-  if (tab === 'receive') {
-    startVanPolling();           // incoming vans for this branch
-    startAllVansPolling();       // movements strip stays visible
-  } else if (tab === 'vans') {
-    startAllVansPolling();       // loads big van-card board too
-  } else {
-    startAllVansPolling();       // Send tab: strip stays visible
-  }
-}
-
-function logout() {
-  localStorage.removeItem('ncm_session');
-  location.reload();
-}
-
-function getActiveBranch() {
-  if (currentRole === 'driver') {
-    const selected = document.querySelector('.branch-card.selected');
-    return selected ? selected.innerText.replace('🏢','').trim() : currentBranch;
-  }
-  return currentBranch;
-}
-
-/* ===================== INCOMING VANS (Receive tab) ===================== */
-
-function startVanPolling() {
-  loadIncomingVans();
-  if (vanPollInterval) clearInterval(vanPollInterval);
-  vanPollInterval = setInterval(loadIncomingVans, 10000);
-}
-
-function stopVanPolling() {
-  if (vanPollInterval)  { clearInterval(vanPollInterval);  vanPollInterval  = null; }
-  if (vanTickInterval)  { clearInterval(vanTickInterval);  vanTickInterval  = null; }
-}
-
-async function loadIncomingVans() {
-  const branch = getActiveBranch();
-  if (!branch) return;
-  try {
-    const res = await apiGet({ action: "getIncomingVans", branch: branch });
-    const vans = res.data || [];
-    const section = document.getElementById('incomingVansSection');
-    const list    = document.getElementById('incomingVansList');
-
-    if (vans.length === 0) {
-      section.classList.add('hidden');
-      stopVanTick();
-      return;
-    }
-
-    section.classList.remove('hidden');
-    list.innerHTML = vans.map((v, idx) => `
-      <div class="van-card ${v.isLate ? 'red' : 'green'}" onclick="fillVanNo('${v.vanNo}')">
-        <div class="van-header">
-          <span class="van-title">Van ${v.vanNo} from ${v.origin}</span>
+          <button
+            class="btn btn-full mt"
+            style="background:#f97316;color:#fff"
+            onclick="postAnnouncement()"
+          >
+            Publish for 24 hours
+          </button>
         </div>
-        <div class="van-timer" id="inVanTimer_${idx}"
-             data-min="${v.elapsedMinutes}" data-sec="${v.elapsedSeconds}">
-          ${fmt(v.elapsedMinutes, v.elapsedSeconds)}
-        </div>
-        <div class="van-meta">${v.count} shipment(s) coming — Tap to select</div>
-      </div>
-    `).join('');
+      </section>
 
-    startVanTick();
-  } catch(e) {}
-}
+      <section id="contactsTab" class="hidden">
+        <div class="card">
+          <h3>👤 B2B contact directory</h3>
 
-function startVanTick() {
-  if (vanTickInterval) clearInterval(vanTickInterval);
-  vanTickInterval = setInterval(() => {
-    document.querySelectorAll('[id^="inVanTimer_"]').forEach(el => {
-      let min = +el.dataset.min, sec = +el.dataset.sec;
-      sec++; if (sec >= 60) { sec = 0; min++; }
-      el.dataset.min = min; el.dataset.sec = sec;
-      el.innerText = fmt(min, sec);
-      const card = el.closest('.van-card');
-      if (card) {
-        card.classList.toggle('red',   min >= 20);
-        card.classList.toggle('green', min < 20);
-      }
-    });
-  }, 1000);
-}
+          <p class="muted">
+            Each branch can keep today’s responsible B2B person and contact
+            number here. If a name or number is wrong, edit and save it again.
+          </p>
 
-function stopVanTick() {
-  if (vanTickInterval) { clearInterval(vanTickInterval); vanTickInterval = null; }
-}
-
-function fillVanNo(van) {
-  document.getElementById('recvVanNo').value = van;
-  fetchPending();
-  toast('Van ' + van + ' selected', 'ok');
-}
-
-/* ===================== ALL VANS — movements strip + vans tab ===================== */
-
-function startAllVansPolling() {
-  loadAllVans();
-  if (allVansPollInterval) clearInterval(allVansPollInterval);
-  allVansPollInterval = setInterval(loadAllVans, 10000);
-
-  if (allVansTickInterval) clearInterval(allVansTickInterval);
-  allVansTickInterval = setInterval(tickAllVansTimers, 1000);
-}
-
-function stopAllVansPolling() {
-  if (allVansPollInterval) { clearInterval(allVansPollInterval); allVansPollInterval = null; }
-  if (allVansTickInterval) { clearInterval(allVansTickInterval); allVansTickInterval = null; }
-}
-
-async function loadAllVans() {
-  try {
-    const res = await apiGet({ action: "getAllVans" });
-    const vans = res.data || [];
-
-    // Sort: moving first
-    const sorted = [...vans].sort((a, b) => {
-      if (a.status === 'moving' && b.status !== 'moving') return -1;
-      if (a.status !== 'moving' && b.status === 'moving') return 1;
-      return 0;
-    });
-
-    renderAllVansStrip(sorted);   // always-visible move-card strip
-    renderVansTabBoard(sorted);   // big van-card board on Vans tab
-  } catch(e) {}
-}
-
-// ── Always-visible strip (Send + Receive tabs) ────────────────────────────
-function renderAllVansStrip(vans) {
-  const section = document.getElementById('allVansSection');
-  const list    = document.getElementById('allVansMoveList');
-  const moving  = vans.filter(v => v.status === 'moving');
-
-  if (moving.length === 0) {
-    section.classList.add('hidden');
-    return;
-  }
-  section.classList.remove('hidden');
-
-  list.innerHTML = vans.map((v, idx) => {
-    if (v.status === 'moving') {
-      const roundLabel = v.roundLabel ? 'Round ' + v.roundLabel + ' · ' : '';
-      return `
-        <div class="move-card moving ${v.isLate ? 'late' : ''}"
-             data-depart-min="${v.elapsedMinutes}" data-depart-sec="${v.elapsedSeconds}">
-          <span class="move-timer ${v.isLate ? 'late' : 'ontime'}">${fmt(v.elapsedMinutes, v.elapsedSeconds)}</span>
-          <div class="move-route">Van ${v.vanNo}: ${v.fromBranch}<span class="arrow">→</span>${v.toBranch}</div>
-          <div class="move-sub">${roundLabel}${v.isLate ? 'Running long' : 'On schedule'}</div>
-        </div>`;
-    } else if (v.status === 'off_duty') {
-      return `
-        <div class="move-card off-duty">
-          <div class="move-route">Van ${v.vanNo}</div>
-          <div class="move-sub">Off duty for today — parked at ${v.lastLocation}</div>
-        </div>`;
-    } else {
-      return `
-        <div class="move-card idle">
-          <div class="move-route">Van ${v.vanNo}</div>
-          <div class="move-sub">Idle — parked at ${v.lastLocation}</div>
-        </div>`;
-    }
-  }).join('');
-}
-
-// ── Vans tab board (big van cards) ────────────────────────────────────────
-function renderVansTabBoard(vans) {
-  const list = document.getElementById('vansTabList');
-  if (vans.length === 0) {
-    list.innerHTML = '<div style="padding:14px;text-align:center;color:#94a3b8;font-size:13px">No van activity yet — this fills in as shipments are sent and received.</div>';
-    return;
-  }
-  list.innerHTML = vans.map((v, idx) => {
-    if (v.status === 'moving') {
-      const roundTag = v.roundLabel ? ` · Round ${v.roundLabel}` : '';
-      return `
-        <div class="van-card ${v.isLate ? 'red' : 'green'}" id="allVanCard_${idx}">
-          <div class="van-header"><span class="van-title">Van ${v.vanNo}</span></div>
-          <div class="van-meta" style="font-size:13px;font-weight:700;margin-bottom:4px">${v.fromBranch} → ${v.toBranch}${roundTag}</div>
-          <div class="van-timer" id="allVanTimer_${idx}"
-               data-min="${v.elapsedMinutes}" data-sec="${v.elapsedSeconds}">
-            ${fmt(v.elapsedMinutes, v.elapsedSeconds)}
+          <div id="contactList">
+            <div class="empty">Loading contacts…</div>
           </div>
-          <div class="van-meta">Last update: just now (live)</div>
-        </div>`;
-    } else if (v.status === 'off_duty') {
-      return `
-        <div class="van-card offduty">
-          <div class="van-header"><span class="van-title">Van ${v.vanNo}</span></div>
-          <div class="van-meta">Off duty for today — parked at ${v.lastLocation}</div>
-        </div>`;
-    } else {
-      return `
-        <div class="van-card grey">
-          <div class="van-header"><span class="van-title">Van ${v.vanNo}</span></div>
-          <div class="van-meta">Idle — parked at ${v.lastLocation}</div>
-        </div>`;
+        </div>
+
+        <div id="contactFormCard" class="card">
+          <h3>Update branch contact</h3>
+
+          <p class="muted">
+            Changes replace the previous contact for the selected branch.
+          </p>
+
+          <label>Branch</label>
+          <select id="contactBranch"></select>
+
+          <label>Responsible person</label>
+          <input id="contactName" maxlength="80" placeholder="Full name">
+
+          <label>Phone number</label>
+          <input id="contactPhone" maxlength="30" inputmode="tel" placeholder="98XXXXXXXX">
+
+          <label>Alternative number</label>
+          <input id="contactAltPhone" maxlength="30" inputmode="tel" placeholder="Optional">
+
+          <label>Note</label>
+          <textarea
+            id="contactNote"
+            maxlength="240"
+            placeholder="Shift time, desk location, or other useful detail"
+          ></textarea>
+
+          <button class="btn btn-blue btn-full mt" onclick="saveContact()">
+            Save / correct contact
+          </button>
+        </div>
+      </section>
+
+      <section id="driverTab" class="hidden">
+        <div class="card">
+          <h3>🚐 Driver check-in / check-out</h3>
+
+          <p class="muted">
+            All seven branches use the same rule. At check-out, type the next
+            branch name, for example <b>CHABAHIL</b>.
+          </p>
+
+          <label>Van number</label>
+
+          <div class="row">
+            <input id="driverVan" class="grow" placeholder="Example: 843">
+            <button class="btn btn-grey" onclick="changeDriverVan()">
+              Change van
+            </button>
+          </div>
+
+          <p class="muted mt">
+            Use “Change van” if you entered the wrong van number.
+          </p>
+
+          <div id="driverState" class="driver-status hidden"></div>
+        </div>
+
+        <div class="card">
+          <h3 id="driverActionTitle">Select your current branch</h3>
+
+          <p class="muted">
+            Tap the branch where the van is now to check in.
+          </p>
+
+          <div id="checkInBranches" class="branch-grid"></div>
+
+          <div id="checkoutArea" class="hidden">
+            <label>Next branch for check-out</label>
+
+            <input
+              id="nextBranch"
+              list="branchNames"
+              autocomplete="off"
+              placeholder="Type CHABAHIL or choose below"
+            >
+
+            <datalist id="branchNames"></datalist>
+
+            <div id="checkoutBranches" class="branch-grid"></div>
+
+            <button class="btn btn-red btn-full mt" onclick="driverCheckOut()">
+              Check out to this branch
+            </button>
+          </div>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <footer id="bottomBar" class="bottom hidden">
+    <span>Branch: <b id="bottomBranch">-</b></span>
+    <span id="onlineStatus">Online</span>
+  </footer>
+
+  <div class="build">v21-branch-ops</div>
+
+  <script>
+    const BRANCHES = [
+      "NAYA BUSPARK",
+      "BASUNDHARA",
+      "CHABAHIL",
+      "TINKUNE",
+      "SATDOBATO",
+      "KALANKI",
+      "SWOYAMBHU"
+    ];
+
+    let SCRIPT_URL = localStorage.getItem("ncm_url") || "";
+    let session = JSON.parse(localStorage.getItem("ncm_session") || "null");
+    let driverState = null;
+    let pollTimer = null;
+
+    const $ = id => document.getElementById(id);
+
+    const esc = value =>
+      String(value == null ? "" : value)
+        .replace(/[&<>"']/g, c => ({
+          "&":"&amp;",
+          "<":"&lt;",
+          ">":"&gt;",
+          '"':"&quot;",
+          "'":"&#39;"
+        }[c]));
+
+    const normalizeBranch = value => {
+      const v = String(value || "")
+        .toUpperCase()
+        .trim()
+        .replace(/\s+/g, " ");
+
+      return v === "CHABHIL" ? "CHABAHIL" : v;
+    };
+
+    const formatDate = value =>
+      value
+        ? new Date(value).toLocaleString("en-GB", {
+            timeZone:"Asia/Kathmandu",
+            day:"2-digit",
+            month:"2-digit",
+            hour:"2-digit",
+            minute:"2-digit"
+          })
+        : "-";
+
+    const formatSeconds = total => {
+      total = Math.max(0, Math.floor(Number(total) || 0));
+
+      return String(Math.floor(total / 3600)).padStart(2,"0") + ":" +
+             String(Math.floor(total % 3600 / 60)).padStart(2,"0") + ":" +
+             String(total % 60).padStart(2,"0");
+    };
+
+    function toast(message, type="ok") {
+      const el = $("toast");
+
+      el.textContent = message;
+      el.className = "toast " + type;
+      el.style.display = "block";
+
+      clearTimeout(el._timer);
+
+      el._timer = setTimeout(() => {
+        el.style.display = "none";
+      }, 3200);
     }
-  }).join('');
-}
 
-// ── Tick all moving-van timers every second ───────────────────────────────
-function tickAllVansTimers() {
-  // Tick the always-visible move-card strip
-  document.querySelectorAll('#allVansMoveList .move-card[data-depart-min]').forEach(card => {
-    let min = +card.getAttribute('data-depart-min');
-    let sec = +card.getAttribute('data-depart-sec');
-    sec++; if (sec >= 60) { sec = 0; min++; }
-    card.setAttribute('data-depart-min', min);
-    card.setAttribute('data-depart-sec', sec);
-    const timerEl = card.querySelector('.move-timer');
-    if (timerEl) timerEl.innerText = fmt(min, sec);
-    const isLate = min >= 20;
-    card.classList.toggle('late', isLate);
-    if (timerEl) {
-      timerEl.classList.toggle('late',   isLate);
-      timerEl.classList.toggle('ontime', !isLate);
+    function apiGet(params) {
+      const query = new URLSearchParams(
+        Object.assign({}, params, {
+          token: session && session.token || ""
+        })
+      );
+
+      return fetch(SCRIPT_URL + "?" + query.toString())
+        .then(response => response.json());
     }
-  });
 
-  // Tick the big van-card timers on the Vans tab
-  document.querySelectorAll('[id^="allVanTimer_"]').forEach(el => {
-    let min = +el.dataset.min, sec = +el.dataset.sec;
-    sec++; if (sec >= 60) { sec = 0; min++; }
-    el.dataset.min = min; el.dataset.sec = sec;
-    el.innerText = fmt(min, sec);
-    const card = el.closest('.van-card');
-    if (card) {
-      card.classList.toggle('red',   min >= 20);
-      card.classList.toggle('green', min < 20);
+    function apiPost(body) {
+      return fetch(SCRIPT_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type":"text/plain;charset=utf-8"
+        },
+        body: JSON.stringify(
+          Object.assign({}, body, {
+            token: session && session.token || ""
+          })
+        )
+      }).then(response => response.json());
     }
-  });
-}
 
-/* ===================== CHIPS ===================== */
+    function saveUrl() {
+      const url = $("scriptUrl").value.trim();
 
-function renderChips(containerId, queue, placeholder) {
-  const box = document.getElementById(containerId);
-  if (queue.length === 0) {
-    box.innerHTML = '<span class="chip-placeholder">' + placeholder + '</span>';
-    return;
-  }
-  box.innerHTML = queue.map(id =>
-    '<span class="chip">' + id + '<button class="x" onclick="removeChip(\'' + containerId + '\',\'' + id + '\')">×</button></span>'
-  ).join('');
-}
+      if (!/\/exec(?:\?|$)/.test(url)) {
+        return toast("Use the deployed URL ending in /exec", "bad");
+      }
 
-function removeChip(containerId, id) {
-  if (containerId === 'sendChipList') {
-    sendQueue = sendQueue.filter(x => x !== id);
-    renderChips('sendChipList', sendQueue, 'Scan or paste shipment IDs here');
-    document.getElementById('sendCount').innerText = sendQueue.length;
-  } else {
-    recvQueue = recvQueue.filter(x => x !== id);
-    renderChips('recvChipList', recvQueue, 'Scanned shipment IDs appear here');
-    updateRecvBtn();
-  }
-}
+      localStorage.setItem("ncm_url", url);
+      SCRIPT_URL = url;
+      boot();
+    }
 
-function addChip(id, containerId, queueArray, placeholder) {
-  id = cleanId(id);
-  if (!id || queueArray.includes(id)) return false;
-  queueArray.push(id);
-  renderChips(containerId === 'sendChipList' ? 'sendChipList' : 'recvChipList', queueArray, placeholder);
-  if (containerId === 'sendChipList') {
-    document.getElementById('sendCount').innerText = sendQueue.length;
-  } else {
-    updateRecvBtn();
-  }
-  if (navigator.vibrate) navigator.vibrate(40);
-  return true;
-}
+    async function login() {
+      const passcode = $("passcode").value.trim();
 
-function cleanId(raw) {
-  let id = String(raw).trim();
-  if (id.includes('#')) id = id.split('#').pop();
-  id = id.split(/\s+/)[0];
-  return id.replace(/[^\w\-]/g, '').toUpperCase();
-}
+      if (!passcode) {
+        return toast("Enter your passcode", "bad");
+      }
 
-function updateRecvBtn() {
-  const btn = document.getElementById('recvBatchBtn');
-  document.getElementById('scanCount').innerText = recvQueue.length + ' items';
-  document.getElementById('recvBtnCount').innerText = recvQueue.length;
-  btn.disabled = recvQueue.length === 0;
-}
+      try {
+        const result = await apiPost({
+          action:"login",
+          passcode
+        });
 
-/* ===================== SEND ===================== */
+        if (!result.success) {
+          return toast(result.error || "Login failed", "bad");
+        }
 
-function handleSendInput(el) {
-  const val = el.value;
-  if (val.includes('\n')) {
-    val.split('\n').forEach(p => { if (p.trim()) addChip(p, 'sendChipList', sendQueue, 'Scan or paste shipment IDs here'); });
-    el.value = "";
-  }
-}
-function sendKey(e) {
-  if (e.key === 'Enter') {
-    e.preventDefault();
-    const val = e.target.value.trim();
-    if (val) { addChip(val, 'sendChipList', sendQueue, 'Scan or paste shipment IDs here'); e.target.value = ""; }
-  }
-}
-function sendPaste(e) {
-  setTimeout(() => {
-    const val = e.target.value;
-    val.split(/[\n,]+/).forEach(p => { if (p.trim()) addChip(p, 'sendChipList', sendQueue, 'Scan or paste shipment IDs here'); });
-    e.target.value = "";
-  }, 10);
-}
+        session = result.session;
+        localStorage.setItem("ncm_session", JSON.stringify(session));
 
-async function sendShipments() {
-  const dest = document.getElementById('destBranch').value;
-  const van  = document.getElementById('sendVanNo').value.trim();
-  if (!dest)              return toast('Select destination', 'bad');
-  if (!van)               return toast('Enter van number', 'bad');
-  if (sendQueue.length === 0) return toast('Scan at least one ID', 'bad');
-  toast('Sending ' + sendQueue.length + ' shipments...', 'ok');
-  try {
-    const res = await apiPost({
-      action: "sendBatch",
-      origin: currentRole === 'driver' ? 'DRIVER' : currentBranch,
-      destination: dest, vanNo: van,
-      shipments: sendQueue.map(id => ({ shipmentId: id }))
+        showApp();
+      } catch (error) {
+        toast("Could not connect to Apps Script", "bad");
+      }
+    }
+
+    function logout() {
+      if (session && session.token) {
+        apiPost({action:"logout"}).catch(() => {});
+      }
+
+      localStorage.removeItem("ncm_session");
+      location.reload();
+    }
+
+    function fillBranchSelect(id, includeAll=false) {
+      const select = $(id);
+
+      if (!select) return;
+
+      select.innerHTML =
+        (includeAll ? '<option value="">Select branch</option>' : "") +
+        BRANCHES.map(branch =>
+          `<option value="${esc(branch)}">${esc(branch)}</option>`
+        ).join("");
+    }
+
+    function showApp() {
+      $("loginScreen").classList.add("hidden");
+      $("setupCard").classList.add("hidden");
+      $("app").classList.remove("hidden");
+      $("bottomBar").classList.remove("hidden");
+
+      const isDriver = session.role === "driver";
+      const isAdmin = session.role === "admin";
+
+      $("identity").textContent =
+        isDriver ? "DRIVER" : (session.branch || "ADMIN");
+
+      $("role").textContent =
+        String(session.role || "").toUpperCase();
+
+      $("bottomBranch").textContent =
+        isDriver ? "DRIVER" : (session.branch || "ADMIN");
+
+      $("tabDriver").classList.toggle(
+        "hidden",
+        !(isDriver || isAdmin)
+      );
+
+      $("announcementFormCard").classList.toggle(
+        "hidden",
+        isDriver
+      );
+
+      $("contactFormCard").classList.toggle(
+        "hidden",
+        isDriver
+      );
+
+      fillBranchSelect("announcementBranch", isAdmin);
+      fillBranchSelect("contactBranch", isAdmin);
+
+      if (!isAdmin && !isDriver) {
+        $("announcementBranch").value = session.branch;
+        $("contactBranch").value = session.branch;
+      }
+
+      if (isDriver) {
+        $("tabDriver").classList.remove("hidden");
+        showTab("driver");
+        initDriver();
+      } else {
+        showTab("dashboard");
+      }
+
+      loadAnnouncements();
+      loadContacts();
+    }
+
+    function showTab(tab) {
+      ["dashboard","contacts","driver"].forEach(name => {
+        $(name + "Tab").classList.toggle("hidden", name !== tab);
+      });
+
+      ["Dashboard","Contacts","Driver"].forEach(name => {
+        $("tab" + name).classList.toggle(
+          "active",
+          name.toLowerCase() === tab
+        );
+      });
+
+      if (tab === "driver") {
+        initDriver();
+      }
+    }
+
+    async function loadAnnouncements() {
+      try {
+        const result = await apiGet({
+          action:"getAnnouncements"
+        });
+
+        if (!result.success) {
+          throw Error(result.error);
+        }
+
+        const list = $("announcementList");
+        const rows = result.data || [];
+
+        list.innerHTML = rows.length
+          ? rows.map(a => `
+              <article class="announcement">
+                <div class="a-head">
+                  <span>${esc(a.branch)}</span>
+                  <span class="badge orange">24 HOUR</span>
+                </div>
+
+                <div class="a-body">${esc(a.message)}</div>
+
+                <div class="a-foot">
+                  Posted by ${esc(a.createdBy || a.branch)}
+                  · expires ${formatDate(a.expiresAt)}
+                </div>
+              </article>
+            `).join("")
+          : '<div class="empty">No active announcements.</div>';
+      } catch (error) {
+        $("announcementList").innerHTML =
+          '<div class="empty">Announcements unavailable.</div>';
+      }
+    }
+
+    async function postAnnouncement() {
+      const message = $("announcementMessage").value.trim();
+      const branch = normalizeBranch($("announcementBranch").value);
+
+      if (!branch || !BRANCHES.includes(branch)) {
+        return toast("Choose a branch", "bad");
+      }
+
+      if (!message) {
+        return toast("Write the announcement first", "bad");
+      }
+
+      try {
+        const result = await apiPost({
+          action:"createAnnouncement",
+          branch,
+          message
+        });
+
+        if (!result.success) {
+          return toast(result.error || "Could not publish", "bad");
+        }
+
+        $("announcementMessage").value = "";
+        toast("Announcement published for 24 hours");
+        loadAnnouncements();
+      } catch (error) {
+        toast("Network error", "bad");
+      }
+    }
+
+    async function loadContacts() {
+      try {
+        const result = await apiGet({
+          action:"getContacts"
+        });
+
+        if (!result.success) {
+          throw Error(result.error);
+        }
+
+        const contacts = result.data || [];
+
+        window._contacts = {};
+        contacts.forEach(contact => {
+          window._contacts[contact.branch] = contact;
+        });
+
+        $("contactList").innerHTML = BRANCHES.map(branch => {
+          const contact =
+            contacts.find(item => item.branch === branch) || {};
+
+          return `
+            <article class="branch-contact">
+              <h4>
+                ${esc(branch)}
+                ${
+                  contact.name
+                    ? '<span class="badge green">UPDATED</span>'
+                    : '<span class="badge">NO CONTACT YET</span>'
+                }
+              </h4>
+
+              ${
+                contact.name
+                  ? `
+                    <div class="contact-line">
+                      <b>${esc(contact.name)}</b>
+                    </div>
+
+                    <div class="contact-line">
+                      ☎
+                      <a href="tel:${esc(contact.phone)}">
+                        ${esc(contact.phone)}
+                      </a>
+
+                      ${
+                        contact.altPhone
+                          ? `
+                            ·
+                            <a href="tel:${esc(contact.altPhone)}">
+                              ${esc(contact.altPhone)}
+                            </a>
+                          `
+                          : ""
+                      }
+                    </div>
+
+                    ${
+                      contact.note
+                        ? `
+                          <div class="contact-line muted">
+                            ${esc(contact.note)}
+                          </div>
+                        `
+                        : ""
+                    }
+
+                    <div class="muted" style="margin-top:6px">
+                      Updated ${formatDate(contact.updatedAt)}
+                    </div>
+                  `
+                  : '<div class="muted">No responsible person has been added.</div>'
+              }
+
+              ${
+                session.role === "admin" || session.branch === branch
+                  ? `
+                    <button
+                      class="btn btn-grey mt"
+                      onclick="editContact('${esc(branch)}')"
+                    >
+                      Edit this contact
+                    </button>
+                  `
+                  : ""
+              }
+            </article>
+          `;
+        }).join("");
+      } catch (error) {
+        $("contactList").innerHTML =
+          '<div class="empty">Contacts unavailable.</div>';
+      }
+    }
+
+    function editContact(branch) {
+      $("contactBranch").value = branch;
+
+      const contact =
+        window._contacts && window._contacts[branch];
+
+      if (contact) {
+        $("contactName").value = contact.name || "";
+        $("contactPhone").value = contact.phone || "";
+        $("contactAltPhone").value = contact.altPhone || "";
+        $("contactNote").value = contact.note || "";
+      }
+
+      $("contactsTab").scrollIntoView({
+        behavior:"smooth"
+      });
+    }
+
+    async function saveContact() {
+      const branch = normalizeBranch($("contactBranch").value);
+      const name = $("contactName").value.trim();
+      const phone = $("contactPhone").value.trim();
+
+      if (!branch || !BRANCHES.includes(branch)) {
+        return toast("Choose a branch", "bad");
+      }
+
+      if (!name || !phone) {
+        return toast("Name and phone are required", "bad");
+      }
+
+      try {
+        const result = await apiPost({
+          action:"saveContact",
+          branch,
+          name,
+          phone,
+          altPhone:$("contactAltPhone").value.trim(),
+          note:$("contactNote").value.trim()
+        });
+
+        if (!result.success) {
+          return toast(result.error || "Could not save contact", "bad");
+        }
+
+        toast("Contact saved / corrected");
+        loadContacts();
+      } catch (error) {
+        toast("Network error", "bad");
+      }
+    }
+
+    function initDriver() {
+      if (session.role !== "driver" && session.role !== "admin") {
+        return;
+      }
+
+      $("driverVan").value =
+        localStorage.getItem("ncm_driver_van") || "";
+
+      $("checkInBranches").innerHTML = BRANCHES.map(branch =>
+        `
+          <button
+            class="branch-choice"
+            onclick="selectCheckIn('${esc(branch)}')"
+          >
+            ${esc(branch)}
+          </button>
+        `
+      ).join("");
+
+      $("branchNames").innerHTML = BRANCHES.map(branch =>
+        `<option value="${esc(branch)}">`
+      ).join("");
+
+      loadDriverState();
+
+      clearInterval(pollTimer);
+      pollTimer = setInterval(loadDriverState, 10000);
+    }
+
+    async function loadDriverState() {
+      const vanNo =
+        $("driverVan").value.trim() ||
+        localStorage.getItem("ncm_driver_van") ||
+        "";
+
+      if (!vanNo) {
+        renderDriverState(null);
+        return;
+      }
+
+      localStorage.setItem("ncm_driver_van", vanNo);
+
+      try {
+        const result = await apiGet({
+          action:"getDriverState",
+          vanNo
+        });
+
+        if (result.success) {
+          driverState = result.state;
+          renderDriverState(driverState);
+        }
+      } catch (error) {
+        $("driverActionTitle").textContent =
+          "Offline — enter your branch when connected";
+      }
+    }
+
+    function changeDriverVan() {
+      const van = $("driverVan").value.trim();
+
+      if (!van) {
+        return toast("Enter the correct van number", "bad");
+      }
+
+      localStorage.setItem("ncm_driver_van", van);
+      driverState = null;
+      loadDriverState();
+
+      toast("Van number changed");
+    }
+
+    function selectCheckIn(branch) {
+      $("driverVan").value = $("driverVan").value.trim();
+
+      if (!$("driverVan").value) {
+        return toast("Enter van number first", "bad");
+      }
+
+      driverCheckIn(branch);
+    }
+
+    async function driverCheckIn(branch) {
+      const vanNo = $("driverVan").value.trim();
+
+      if (!vanNo) {
+        return toast("Enter van number first", "bad");
+      }
+
+      try {
+        const result = await apiPost({
+          action:"driverCheckIn",
+          vanNo,
+          branch:normalizeBranch(branch)
+        });
+
+        if (!result.success) {
+          return toast(result.error || "Check-in failed", "bad");
+        }
+
+        localStorage.setItem("ncm_driver_van", vanNo);
+        driverState = result.state;
+        renderDriverState(driverState);
+
+        toast(result.message || "Checked in");
+      } catch (error) {
+        toast("Network error", "bad");
+      }
+    }
+
+    function pickNext(branch, button) {
+      $("nextBranch").value = branch;
+
+      document
+        .querySelectorAll("#checkoutBranches .branch-choice")
+        .forEach(item => item.classList.remove("selected"));
+
+      if (button) {
+        button.classList.add("selected");
+      }
+    }
+
+    async function driverCheckOut() {
+      const vanNo = $("driverVan").value.trim();
+      const nextBranch = normalizeBranch($("nextBranch").value);
+
+      if (!vanNo) {
+        return toast("Enter van number first", "bad");
+      }
+
+      if (!BRANCHES.includes(nextBranch)) {
+        return toast("Type a valid branch name", "bad");
+      }
+
+      try {
+        const result = await apiPost({
+          action:"driverCheckOut",
+          vanNo,
+          nextBranch
+        });
+
+        if (!result.success) {
+          return toast(result.error || "Check-out failed", "bad");
+        }
+
+        driverState = result.state;
+        renderDriverState(driverState);
+
+        toast(result.message || "Checked out");
+      } catch (error) {
+        toast("Network error", "bad");
+      }
+    }
+
+    function renderDriverState(state) {
+      const box = $("driverState");
+      const action = $("driverActionTitle");
+      const checkIn = $("checkInBranches");
+      const checkout = $("checkoutArea");
+
+      if (!state || !state.started) {
+        box.classList.add("hidden");
+        action.textContent = "Select your current branch";
+        checkIn.classList.remove("hidden");
+        checkout.classList.add("hidden");
+        return;
+      }
+
+      box.classList.remove("hidden");
+      checkIn.classList.add("hidden");
+
+      if (state.status === "MOVING") {
+        box.className = "driver-status moving";
+
+        box.innerHTML = `
+          <h3>Heading to ${esc(state.nextBranch)}</h3>
+          <p class="muted">Check in when you arrive.</p>
+          <div class="timer">${formatSeconds(state.elapsedSeconds)}</div>
+          <span class="badge green">
+            MOVING · ROUND ${esc(state.round)}
+          </span>
+        `;
+
+        action.textContent =
+          "Next check-in: " + state.nextBranch;
+
+        checkout.classList.add("hidden");
+      } else {
+        box.className = "driver-status";
+
+        box.innerHTML = `
+          <h3>At ${esc(state.branch)}</h3>
+          <p class="muted">
+            Choose the next branch and check out when leaving.
+          </p>
+          <div class="timer">${formatSeconds(state.elapsedSeconds)}</div>
+          <span class="badge green">
+            AT BRANCH · ROUND ${esc(state.round)}
+          </span>
+        `;
+
+        action.textContent =
+          "Check out from " + state.branch;
+
+        checkout.classList.remove("hidden");
+
+        const options = BRANCHES.filter(
+          branch => branch !== state.branch
+        );
+
+        $("checkoutBranches").innerHTML = options.map(branch =>
+          `
+            <button
+              class="branch-choice"
+              onclick="pickNext('${esc(branch)}', this)"
+            >
+              ${esc(branch)}
+            </button>
+          `
+        ).join("");
+      }
+    }
+
+    function updateClock() {
+      const now = new Date();
+
+      $("clock").innerHTML =
+        now.toLocaleTimeString("en-GB", {
+          timeZone:"Asia/Kathmandu",
+          hour12:false
+        }) +
+        "<small>" +
+        now.toLocaleDateString("en-GB", {
+          timeZone:"Asia/Kathmandu"
+        }) +
+        "</small>";
+    }
+
+    function boot() {
+      $("setupCard").classList.toggle("hidden", !!SCRIPT_URL);
+
+      if (!SCRIPT_URL) {
+        return;
+      }
+
+      if (session && session.token) {
+        showApp();
+      } else {
+        $("loginScreen").classList.remove("hidden");
+      }
+    }
+
+    window.addEventListener("online", () => {
+      $("onlineStatus").textContent = "Online";
     });
-    if (res.success) {
-      let msg = res.sent + ' sent';
-      if (res.results) {
-        const dupes = res.results.filter(r => r.status === 'duplicate');
-        if (dupes.length) msg += ' | ' + dupes.length + ' already in transit';
-      }
-      toast(msg, 'ok');
-      sendQueue = [];
-      renderChips('sendChipList', [], 'Scan or paste shipment IDs here');
-      document.getElementById('sendCount').innerText = '0';
-    } else {
-      toast(res.error, 'bad');
-    }
-  } catch(e) { toast('Network error', 'bad'); }
-}
 
-/* ===================== RECEIVE ===================== */
+    window.addEventListener("offline", () => {
+      $("onlineStatus").textContent = "Offline";
+      toast("You are offline", "warn");
+    });
 
-function handleRecvInput(el) {
-  const val = el.value;
-  if (val.includes('\n')) {
-    val.split('\n').forEach(p => { if (p.trim()) pushRecv(p); });
-    el.value = "";
-  }
-  scheduleRecvFlush();
-}
-function recvKey(e) {
-  if (e.key === 'Enter') {
-    e.preventDefault();
-    const val = e.target.value.trim();
-    if (val) { pushRecv(val); e.target.value = ""; }
-    scheduleRecvFlush();
-  }
-}
-function recvPaste(e) {
-  setTimeout(() => {
-    const val = e.target.value;
-    val.split(/[\n,]+/).forEach(p => { if (p.trim()) pushRecv(p); });
-    e.target.value = "";
-    scheduleRecvFlush();
-  }, 10);
-}
-
-function pushRecv(raw) {
-  const id = cleanId(raw);
-  if (!id || recvQueue.includes(id)) return;
-  recvQueue.push(id);
-  renderChips('recvChipList', recvQueue, 'Scanned shipment IDs appear here');
-  updateRecvBtn();
-  if (navigator.vibrate) navigator.vibrate(40);
-}
-
-function scheduleRecvFlush() {
-  clearTimeout(recvTimer);
-  recvTimer = setTimeout(() => { if (recvQueue.length > 0) submitBatch(); }, RECV_AUTO_DELAY);
-}
-
-async function submitBatch() {
-  clearTimeout(recvTimer);
-  const van    = document.getElementById('recvVanNo').value.trim();
-  const branch = getActiveBranch();
-  if (!van)    return toast('Enter van number', 'bad');
-  if (!branch) return toast('Select a branch first', 'bad');
-  if (recvQueue.length === 0) return;
-  toast('Receiving ' + recvQueue.length + ' shipments...', 'ok');
-  try {
-    const res = await apiPost({ action: "receiveBatch", branch: branch, vanNo: van, shipmentIds: recvQueue });
-    if (res.success) {
-      let msg = res.receivedCount + ' received';
-      if (res.notFoundIds && res.notFoundIds.length) msg += ' | ' + res.notFoundIds.length + ' not found';
-      toast(msg, res.notFoundIds && res.notFoundIds.length ? 'warn' : 'ok');
-      recvQueue = res.notFoundIds || [];
-      renderChips('recvChipList', recvQueue, 'Scanned shipment IDs appear here');
-      updateRecvBtn();
-      fetchPending();
-      loadIncomingVans();
-    } else {
-      toast(res.error, 'bad');
-    }
-  } catch(e) { toast('Network error', 'bad'); }
-}
-
-async function fetchPending() {
-  const van    = document.getElementById('recvVanNo').value.trim();
-  const branch = getActiveBranch();
-  if (!van)    return toast('Enter van number first', 'bad');
-  if (!branch) return toast('Select a branch first', 'bad');
-  try {
-    const res = await apiGet({ action: "getPendingByVan", branch: branch, vanNo: van });
-    const items = res.data || [];
-    document.getElementById('pendingSection').classList.remove('hidden');
-    document.getElementById('pendingCount').innerText = items.length;
-    const list = document.getElementById('shipmentList');
-    if (items.length === 0) {
-      list.innerHTML = '<div style="padding:14px;text-align:center;color:#94a3b8;font-size:13px">No pending shipments</div>';
-    } else {
-      list.innerHTML = items.map(item =>
-        '<div class="shipment-item"><div><div class="shipment-id">' + item.shipmentId + '</div><div class="shipment-meta">From: ' + item.origin + '</div></div></div>'
-      ).join('');
-    }
-  } catch(e) { toast('Fetch error', 'bad'); }
-}
-
-async function receiveAllSheet() {
-  const van    = document.getElementById('recvVanNo').value.trim();
-  const branch = getActiveBranch();
-  if (!van)    return toast('Enter van number', 'bad');
-  if (!branch) return toast('Select a branch first', 'bad');
-  try {
-    const res = await apiPost({ action: "receiveAll", branch: branch, vanNo: van });
-    toast(res.message, res.success ? 'ok' : 'bad');
-    if (res.success) { fetchPending(); loadIncomingVans(); }
-  } catch(e) { toast('Error', 'bad'); }
-}
-
-/* ===================== CAMERA ===================== */
-
-async function initDetector() {
-  if ('BarcodeDetector' in window) {
-    try {
-      const formats = await BarcodeDetector.getSupportedFormats();
-      barcodeDetector = new BarcodeDetector({ formats: formats });
-      return true;
-    } catch(e) { return false; }
-  }
-  return false;
-}
-
-async function openCamera(mode) {
-  scanMode = mode;
-  if (mode === 'receive') {
-    const van = document.getElementById('recvVanNo').value.trim();
-    if (!van)               return toast('Enter Van Number first', 'bad');
-    if (!getActiveBranch()) return toast('Select branch first', 'bad');
-  }
-  await initDetector();
-  document.getElementById('camModal').classList.add('active');
-  try {
-    camStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
-    const video = document.getElementById('camVideo');
-    video.srcObject = camStream;
-    video.play();
-    isScanning = true;
-    requestAnimationFrame(tick);
-  } catch(e) {
-    toast('Camera error: ' + e.message, 'bad');
-    closeCamera();
-  }
-}
-
-function closeCamera() {
-  isScanning = false;
-  document.getElementById('camModal').classList.remove('active');
-  if (camStream) {
-    camStream.getTracks().forEach(t => t.stop());
-    camStream = null;
-  }
-}
-
-let lastScanTime = 0;
-async function tick() {
-  if (!isScanning) return;
-  const video = document.getElementById('camVideo');
-  if (video.readyState !== video.HAVE_ENOUGH_DATA) { requestAnimationFrame(tick); return; }
-  const now = Date.now();
-  if (now - lastScanTime < 350) { requestAnimationFrame(tick); return; }
-  const canvas = document.getElementById('camCanvas');
-  canvas.width = video.videoWidth; canvas.height = video.videoHeight;
-  const ctx = canvas.getContext('2d');
-  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-  let code = null;
-  if (barcodeDetector) {
-    try { const codes = await barcodeDetector.detect(canvas); if (codes.length) code = codes[0].rawValue; }
-    catch(e) {}
-  }
-  if (code) {
-    lastScanTime = now;
-    const clean = cleanId(code);
-    if (scanMode === 'send') {
-      if (addChip(clean, 'sendChipList', sendQueue, 'Scan or paste shipment IDs here')) toast('Scanned: ' + clean, 'ok');
-    } else {
-      if (!recvQueue.includes(clean)) {
-        recvQueue.push(clean);
-        renderChips('recvChipList', recvQueue, 'Scanned shipment IDs appear here');
-        updateRecvBtn();
-        scheduleRecvFlush();
-        toast('Scanned: ' + clean, 'ok');
-      }
-    }
-  }
-  requestAnimationFrame(tick);
-}
-
-/* ===================== HELPERS ===================== */
-
-function fmt(min, sec) {
-  return String(min).padStart(2,'0') + ':' + String(sec).padStart(2,'0');
-}
-
-function toast(msg, type) {
-  const t = document.getElementById('toast');
-  t.innerText = msg;
-  t.className = 'toast ' + type;
-  t.style.display = 'block';
-  clearTimeout(t._tm);
-  t._tm = setTimeout(() => t.style.display = 'none', 3000);
-}
-
-init();
-</script>
+    updateClock();
+    setInterval(updateClock, 1000);
+    boot();
+  </script>
 </body>
 </html>
