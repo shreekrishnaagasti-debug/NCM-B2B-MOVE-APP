@@ -1,29 +1,16 @@
 /*
- * NCM BRANCH OPERATIONS — Google Apps Script backend (v22-fast)
+ * NCM BRANCH OPERATIONS — Google Apps Script backend
  *
  * Paste this file into Apps Script as Code.js.
  * Deploy as a Web app, execute as the owner, and allow the users who need it.
- * After any change: Deploy → Manage deployments → Edit → New version → Deploy.
- *
- * PERFORMANCE FIXES IN THIS VERSION (why the app was feeling slow):
- *  1. Locking was script-wide (LockService.getScriptLock()) — every van's
- *     check-in/check-out queued behind every OTHER van's, even though they
- *     have nothing to do with each other. Now locking is PER VAN via
- *     CacheService, so unrelated vans never block each other.
- *  2. getState_() did a full linear scan of VAN_CURRENT_STATE on every
- *     single read — called on every check-in, check-out, and every 10s
- *     poll from every driver. Now each van's state is cached for a few
- *     seconds and refreshed immediately on write, so most reads never
- *     touch the sheet at all.
- *  3. Announcements/Contacts (read by everyone, changed rarely) are now
- *     also cached briefly, since they don't need a fresh sheet read on
- *     every single page view.
  *
  * Sheets created automatically:
  *   ANNOUNCEMENTS, BRANCH_CONTACTS, VAN_CURRENT_STATE, VAN_MOVEMENT_HISTORY
+ *
+ * The seven branches intentionally share the same routing rule.
+ * Change PASSCODES before production, or store a JSON object in the
+ * Script Property NCM_PASSCODES.
  */
-
-const BACKEND_VERSION = "v22-fast";
 
 const CONFIG = {
   TIMEZONE: "Asia/Kathmandu",
@@ -48,7 +35,8 @@ const SHEETS = {
   ANNOUNCEMENTS: ["ID","Branch","Message","Created By","Created At","Expires At"],
   CONTACTS: ["Branch","Name","Phone","Alternative Phone","Note","Updated By","Updated At"],
   STATE: ["Van No","Current Branch","Next Branch","Status","Round","Arrival At","Departure At","Updated At","Version"],
-  HISTORY: ["ID","Van No","From Branch","To Branch","Check In","Check Out","Hold Seconds","Travel Seconds","Status","Round","Created At"]
+  HISTORY: ["ID","Van No","From Branch","To Branch","Check In","Check Out","Hold Seconds","Travel Seconds","Status","Round","Created At"],
+  AUDIT: ["Request ID","Action","Van No","Actor","Local At","Server At","Offline","Previous State","New State","Result"]
 };
 
 function json_(data) {
@@ -119,153 +107,15 @@ function requireAuth_(token, roles) {
   return user;
 }
 
-/* ═══════════════════════════════════════════════════════
-   FIX #1 — PER-VAN LOCKING
-   A CacheService-based mutex scoped to one van number, instead of
-   LockService.getScriptLock() which serializes EVERY van against
-   every other van. Two different vans can now update at the exact
-   same moment without waiting on each other.
-═══════════════════════════════════════════════════════ */
-function acquireVanLock_(van) {
-  var cache = CacheService.getScriptCache();
-  var key = "lock_van_" + van;
-  for (var i = 0; i < 30; i++) { // up to ~3s of polite waiting
-    var existing = cache.get(key);
-    if (!existing) {
-      cache.put(key, "1", 15); // safety-net TTL in case a release is ever missed
-      return true;
-    }
-    Utilities.sleep(100);
-  }
-  return false;
-}
-function releaseVanLock_(van) {
-  CacheService.getScriptCache().remove("lock_van_" + van);
-}
-
-/* ═══════════════════════════════════════════════════════
-   FIX #2 — CACHED VAN STATE
-   Each van's current state is cached for a few seconds and refreshed
-   immediately on every write. Polling (every 10s from every driver)
-   almost always hits this cache instead of re-scanning the sheet.
-═══════════════════════════════════════════════════════ */
-function stateCacheKey_(van) { return "state_" + van; }
-
-function cacheState_(state) {
-  try {
-    var plain = {
-      row: state.row, vanNo: state.vanNo, currentBranch: state.currentBranch,
-      nextBranch: state.nextBranch, status: state.status, round: state.round,
-      arrivalAt: state.arrivalAt ? new Date(state.arrivalAt).toISOString() : "",
-      departureAt: state.departureAt ? new Date(state.departureAt).toISOString() : "",
-      version: state.version
-    };
-    CacheService.getScriptCache().put(stateCacheKey_(state.vanNo), JSON.stringify(plain), 8);
-  } catch (e) {}
-}
-
-function readStateCache_(van) {
-  try {
-    var raw = CacheService.getScriptCache().get(stateCacheKey_(van));
-    if (!raw) return null;
-    var parsed = JSON.parse(raw);
-    parsed.arrivalAt = parsed.arrivalAt ? new Date(parsed.arrivalAt) : "";
-    parsed.departureAt = parsed.departureAt ? new Date(parsed.departureAt) : "";
-    return parsed;
-  } catch (e) { return null; }
-}
-
-function stateHeader_() { return getSheet_("VAN_CURRENT_STATE", SHEETS.STATE); }
-
-function getState_(vanNo) {
-  vanNo = cleanText_(vanNo, 30);
-  if (!vanNo) return null;
-  var cached = readStateCache_(vanNo);
-  if (cached) return cached;
-  var values = rows_(stateHeader_());
-  for (var i = 0; i < values.length; i++) {
-    if (String(values[i][0]).trim() === vanNo) {
-      var state = {
-        row: i + 2, vanNo: vanNo, currentBranch: cleanBranch_(values[i][1]),
-        nextBranch: cleanBranch_(values[i][2]), status: String(values[i][3] || "AT_STATION"),
-        round: Number(values[i][4]) || 1, arrivalAt: values[i][5], departureAt: values[i][6],
-        updatedAt: values[i][7], version: Number(values[i][8]) || 0
-      };
-      cacheState_(state);
-      return state;
-    }
-  }
-  return null;
-}
-
-function writeState_(state) {
-  var sheet = stateHeader_();
-  var record = [state.vanNo, state.currentBranch, state.nextBranch || "", state.status, state.round, state.arrivalAt || "", state.departureAt || "", now_(), (state.version || 0) + 1];
-  if (state.row) sheet.getRange(state.row, 1, 1, record.length).setValues([record]);
-  else { sheet.appendRow(record); state.row = sheet.getLastRow(); }
-  state.version = record[8];
-  state.updatedAt = record[7];
-  cacheState_(state); // refresh cache immediately so the next read is instant and correct
-  return state;
-}
-
-function driverStateResponse_(state) {
-  if (!state) return { vanNo:"", started:false, status:"NOT_STARTED", branch:null, nextBranch:null, round:0, elapsedSeconds:0 };
-  var elapsed = state.status === "MOVING" ? seconds_(state.departureAt, now_()) : seconds_(state.arrivalAt, now_());
-  return {
-    vanNo: state.vanNo, started: true, status: state.status, branch: state.currentBranch,
-    nextBranch: state.nextBranch || null, round: state.round, elapsedSeconds: elapsed,
-    arrivalAt: iso_(state.arrivalAt), departureAt: iso_(state.departureAt), version: state.version
-  };
-}
-function validDestination_(current, next) { return validBranch_(next) && cleanBranch_(current) !== cleanBranch_(next); }
-function historySheet_() { return getSheet_("VAN_MOVEMENT_HISTORY", SHEETS.HISTORY); }
-function appendHistory_(record) { historySheet_().appendRow(record); }
-
-/* ═══════════════════════════════════════════════════════
-   FIX #3 — CACHED ANNOUNCEMENTS / CONTACTS
-   Read constantly by every branch and driver, changed rarely.
-═══════════════════════════════════════════════════════ */
-function getAnnouncements_() {
-  var cache = CacheService.getScriptCache();
-  var cached = cache.get("announcements_v1");
-  if (cached) { try { return JSON.parse(cached); } catch (e) {} }
-  var sheet = getSheet_("ANNOUNCEMENTS", SHEETS.ANNOUNCEMENTS), values = rows_(sheet), now = now_(), result = [];
-  for (var i = 0; i < values.length; i++) {
-    var expires = values[i][5] instanceof Date ? values[i][5] : new Date(values[i][5]);
-    if (isNaN(expires) || expires <= now) continue;
-    result.push({ id:String(values[i][0]), branch:values[i][1], message:values[i][2], createdBy:values[i][3], createdAt:iso_(values[i][4]), expiresAt:iso_(expires) });
-  }
-  result.reverse();
-  try { cache.put("announcements_v1", JSON.stringify(result), 10); } catch (e) {}
-  return result;
-}
-
-function getContacts_() {
-  var cache = CacheService.getScriptCache();
-  var cached = cache.get("contacts_v1");
-  if (cached) { try { return JSON.parse(cached); } catch (e) {} }
-  var sheet = getSheet_("BRANCH_CONTACTS", SHEETS.CONTACTS), values = rows_(sheet), byBranch = {};
-  for (var i = 0; i < values.length; i++) {
-    var branch = cleanBranch_(values[i][0]);
-    if (!validBranch_(branch)) continue;
-    byBranch[branch] = { branch:branch, name:values[i][1] || "", phone:values[i][2] || "", altPhone:values[i][3] || "", note:values[i][4] || "", updatedBy:values[i][5] || "", updatedAt:iso_(values[i][6]) };
-  }
-  var result = CONFIG.BRANCHES.map(function(branch) { return byBranch[branch] || { branch:branch, name:"", phone:"", altPhone:"", note:"" }; });
-  try { cache.put("contacts_v1", JSON.stringify(result), 15); } catch (e) {}
-  return result;
-}
-
-/* ═══════════════════════════════════════════════════════
-   WEB APP ENTRY POINTS
-═══════════════════════════════════════════════════════ */
-
 function doGet(e) {
   var p = e && e.parameter || {}, action = p.action;
   try {
-    if (action === "getVersion") return json_({success:true, version:BACKEND_VERSION});
     if (action === "getAnnouncements") return json_({success:true, data:getAnnouncements_()});
     if (action === "getContacts") { requireAuth_(p.token, ["branch","driver","admin"]); return json_({success:true, data:getContacts_()}); }
+    if (action === "getVanBoard") {
+      requireAuth_(p.token, ["branch","driver","admin"]);
+      return json_({success:true, data:getVanBoard_(), updatedAt:now_().toISOString()});
+    }
     if (action === "getDriverState") {
       requireAuth_(p.token, ["driver","admin"]);
       return json_({success:true, state:driverStateResponse_(getState_(cleanText_(p.vanNo, 30)))});
@@ -285,6 +135,7 @@ function doPost(e) {
       case "saveContact": return json_(saveContact_(body));
       case "driverCheckIn": return json_(driverCheckIn_(body));
       case "driverCheckOut": return json_(driverCheckOut_(body));
+      case "driverCorrectBranch": return json_(driverCorrectBranch_(body));
       default: return json_({success:false,error:"Unknown action"});
     }
   } catch (err) { return json_({success:false,error:err.message || String(err)}); }
@@ -298,20 +149,39 @@ function login_(passcode) {
   return {success:true, session:session};
 }
 
+function getAnnouncements_() {
+  var sheet = getSheet_("ANNOUNCEMENTS", SHEETS.ANNOUNCEMENTS), values = rows_(sheet), now = now_(), result = [];
+  for (var i = 0; i < values.length; i++) {
+    var expires = values[i][5] instanceof Date ? values[i][5] : new Date(values[i][5]);
+    if (isNaN(expires) || expires <= now) continue;
+    result.push({id:String(values[i][0]), branch:values[i][1], message:values[i][2], createdBy:values[i][3], createdAt:iso_(values[i][4]), expiresAt:iso_(expires)});
+  }
+  return result.reverse();
+}
+
 function createAnnouncement_(data) {
   var user = requireAuth_(data.token, ["branch","admin"]), branch = cleanBranch_(data.branch), message = cleanText_(data.message, 500);
   if (!validBranch_(branch)) return {success:false,error:"Choose one of the seven valid branches."};
   if (user.role === "branch" && user.branch !== branch) return {success:false,error:"A branch user can only post for their own branch."};
   if (!message) return {success:false,error:"Write an announcement first."};
-  var lock = LockService.getScriptLock(); lock.waitLock(10000); // low-frequency write, script lock is fine here
+  var lock = LockService.getScriptLock(); lock.waitLock(10000);
   try {
     var created = now_(), expires = new Date(created.getTime() + CONFIG.ANNOUNCEMENT_HOURS * 3600000);
     getSheet_("ANNOUNCEMENTS", SHEETS.ANNOUNCEMENTS).appendRow([
       Utilities.getUuid(), branch, message, user.branch || "ADMIN", created, expires
     ]);
-    CacheService.getScriptCache().remove("announcements_v1"); // invalidate so the new post shows immediately
     return {success:true,message:"Announcement published for 24 hours",expiresAt:expires.toISOString()};
   } finally { lock.releaseLock(); }
+}
+
+function getContacts_() {
+  var sheet = getSheet_("BRANCH_CONTACTS", SHEETS.CONTACTS), values = rows_(sheet), byBranch = {};
+  for (var i = 0; i < values.length; i++) {
+    var branch = cleanBranch_(values[i][0]);
+    if (!validBranch_(branch)) continue;
+    byBranch[branch] = {branch:branch,name:values[i][1] || "",phone:values[i][2] || "",altPhone:values[i][3] || "",note:values[i][4] || "",updatedBy:values[i][5] || "",updatedAt:iso_(values[i][6])};
+  }
+  return CONFIG.BRANCHES.map(function(branch) { return byBranch[branch] || {branch:branch,name:"",phone:"",altPhone:"",note:""}; });
 }
 
 function saveContact_(data) {
@@ -326,24 +196,111 @@ function saveContact_(data) {
     for (var i=0; i<values.length; i++) if (cleanBranch_(values[i][0]) === branch) row = i + 2;
     var record = [branch,name,phone,alt,note,user.branch || "ADMIN",now_()];
     if (row === -1) sheet.appendRow(record); else sheet.getRange(row,1,1,record.length).setValues([record]);
-    CacheService.getScriptCache().remove("contacts_v1"); // invalidate so the edit shows immediately
     return {success:true,message:"Contact saved / corrected"};
   } finally { lock.releaseLock(); }
+}
+
+function stateHeader_() { return getSheet_("VAN_CURRENT_STATE", SHEETS.STATE); }
+function getState_(vanNo) {
+  vanNo = cleanText_(vanNo,30); if (!vanNo) return null;
+  var values = rows_(stateHeader_());
+  for (var i=0; i<values.length; i++) if (String(values[i][0]).trim() === vanNo) {
+    return {row:i+2,vanNo:vanNo,currentBranch:cleanBranch_(values[i][1]),nextBranch:cleanBranch_(values[i][2]),status:String(values[i][3] || "AT_STATION"),round:Number(values[i][4]) || 1,arrivalAt:values[i][5],departureAt:values[i][6],updatedAt:values[i][7],version:Number(values[i][8]) || 0};
+  }
+  return null;
+}
+function getVanBoard_() {
+  var values = rows_(stateHeader_()), now = now_(), board = [];
+  for (var i = 0; i < values.length; i++) {
+    var vanNo = cleanText_(values[i][0], 30);
+    if (!vanNo) continue;
+    var currentBranch = cleanBranch_(values[i][1]);
+    var nextBranch = cleanBranch_(values[i][2]);
+    var status = String(values[i][3] || "AT_STATION").toUpperCase();
+    var round = Number(values[i][4]) || 1;
+    var elapsedSeconds = status === "MOVING"
+      ? seconds_(values[i][6], now)
+      : seconds_(values[i][5], now);
+    if (status === "MOVING") {
+      board.push({
+        vanNo:vanNo, status:"MOVING", fromBranch:currentBranch,
+        toBranch:nextBranch, round:round, elapsedSeconds:elapsedSeconds
+      });
+    } else {
+      board.push({
+        vanNo:vanNo, status:"AT_STATION", branch:currentBranch,
+        round:round, elapsedSeconds:elapsedSeconds
+      });
+    }
+  }
+  return board.sort(function(a,b) {
+    if (a.status === "MOVING" && b.status !== "MOVING") return -1;
+    if (a.status !== "MOVING" && b.status === "MOVING") return 1;
+    return String(a.vanNo).localeCompare(String(b.vanNo), undefined, {numeric:true});
+  });
+}
+function writeState_(state) {
+  var sheet = stateHeader_(), record = [state.vanNo,state.currentBranch,state.nextBranch || "",state.status,state.round,state.arrivalAt || "",state.departureAt || "",now_(),(state.version || 0) + 1];
+  if (state.row) sheet.getRange(state.row,1,1,record.length).setValues([record]); else sheet.appendRow(record);
+  state.version = record[8]; state.updatedAt = record[7]; return state;
+}
+function driverStateResponse_(state) {
+  if (!state) return {vanNo:"",started:false,status:"NOT_STARTED",branch:null,nextBranch:null,round:0,elapsedSeconds:0};
+  var elapsed = state.status === "MOVING" ? seconds_(state.departureAt,now_()) : seconds_(state.arrivalAt,now_());
+  return {vanNo:state.vanNo,started:true,status:state.status,branch:state.currentBranch,nextBranch:state.nextBranch || null,round:state.round,elapsedSeconds:elapsed,arrivalAt:iso_(state.arrivalAt),departureAt:iso_(state.departureAt),version:state.version};
+}
+function validDestination_(current, next) { return validBranch_(next) && cleanBranch_(current) !== cleanBranch_(next); }
+function historySheet_() { return getSheet_("VAN_MOVEMENT_HISTORY", SHEETS.HISTORY); }
+function appendHistory_(record) { historySheet_().appendRow(record); }
+function auditSheet_() { return getSheet_("VAN_AUDIT_LOG", SHEETS.AUDIT); }
+function requestId_(data) { return cleanText_(data.requestId || data.clientId || Utilities.getUuid(), 120); }
+function findAuditResponse_(requestId) {
+  if (!requestId) return null;
+  var values = rows_(auditSheet_());
+  for (var i = values.length - 1; i >= 0; i--) {
+    if (String(values[i][0] || "") === String(requestId) && String(values[i][9] || "")) {
+      try { return JSON.parse(String(values[i][9])); } catch (e) { return null; }
+    }
+  }
+  return null;
+}
+function appendAudit_(data, user, previousState, newState, response) {
+  auditSheet_().appendRow([
+    data._resolvedRequestId || requestId_(data),
+    cleanText_(data.action, 60),
+    cleanText_(data.vanNo, 30),
+    (user.role || "") + (user.branch ? "@" + user.branch : ""),
+    cleanText_(data.localAt, 40),
+    now_(),
+    data.offline === true ? "YES" : "NO",
+    JSON.stringify(previousState || {}),
+    JSON.stringify(newState || {}),
+    JSON.stringify(response || {})
+  ]);
 }
 
 function driverCheckIn_(data) {
   var user = requireAuth_(data.token, ["driver","admin"]), van = cleanText_(data.vanNo,30), branch = cleanBranch_(data.branch);
   if (!van || !validBranch_(branch)) return {success:false,error:"Enter a van number and choose a valid branch."};
-  if (!acquireVanLock_(van)) return {success:false,error:"This van is mid-update — try again in a second."};
+  var lock = LockService.getScriptLock(); lock.waitLock(15000);
   try {
+    var requestId = requestId_(data); data._resolvedRequestId = requestId;
+    var replay = findAuditResponse_(requestId);
+    if (replay) return replay;
     var state = getState_(van), now = now_();
     if (!state) {
       state = {vanNo:van,currentBranch:branch,nextBranch:"",status:"AT_STATION",round:1,arrivalAt:now,departureAt:"",version:0};
       writeState_(state); appendHistory_([Utilities.getUuid(),van,"",branch,now,"",0,0,"AT_STATION",1,now]);
-      return {success:true,message:"Checked in at " + branch,state:driverStateResponse_(state)};
+      var createdResponse = {success:true,message:"Checked in at " + branch,state:driverStateResponse_(state)};
+      appendAudit_(data, user, null, state, createdResponse);
+      return createdResponse;
     }
     if (state.status === "AT_STATION") {
-      if (state.currentBranch === branch) return {success:true,message:"Check-in already saved at " + branch,state:driverStateResponse_(state)};
+      if (state.currentBranch === branch) {
+        var sameResponse = {success:true,message:"Check-in already saved at " + branch,state:driverStateResponse_(state)};
+        appendAudit_(data, user, state, state, sameResponse);
+        return sameResponse;
+      }
       return {success:false,error:"Already checked in at " + state.currentBranch + ". Check out first."};
     }
     if (state.nextBranch !== branch) return {success:false,error:"This van is heading to " + state.nextBranch + "."};
@@ -351,26 +308,67 @@ function driverCheckIn_(data) {
     var travel = seconds_(state.departureAt,now), round = previousBranch !== "TINKUNE" && branch === "TINKUNE" ? state.round + 1 : state.round;
     state.currentBranch = branch; state.nextBranch = ""; state.status = "AT_STATION"; state.arrivalAt = now; state.departureAt = ""; state.round = round;
     writeState_(state); appendHistory_([Utilities.getUuid(),van,previousBranch,branch,now,"",0,travel,"AT_STATION",round,now]);
-    return {success:true,message:"Checked in at " + branch,state:driverStateResponse_(state)};
-  } finally { releaseVanLock_(van); }
+    var arrivalResponse = {success:true,message:"Checked in at " + branch,state:driverStateResponse_(state)};
+    appendAudit_(data, user, {branch:previousBranch,status:"MOVING",nextBranch:branch}, state, arrivalResponse);
+    return arrivalResponse;
+  } finally { lock.releaseLock(); }
 }
 
 function driverCheckOut_(data) {
-  requireAuth_(data.token, ["driver","admin"]);
+  var user = requireAuth_(data.token, ["driver","admin"]);
   var van = cleanText_(data.vanNo,30), next = cleanBranch_(data.nextBranch);
   if (!van || !validBranch_(next)) return {success:false,error:"Type one of the seven valid branch names."};
-  if (!acquireVanLock_(van)) return {success:false,error:"This van is mid-update — try again in a second."};
+  var lock = LockService.getScriptLock(); lock.waitLock(15000);
   try {
+    var requestId = requestId_(data); data._resolvedRequestId = requestId;
+    var replay = findAuditResponse_(requestId);
+    if (replay) return replay;
     var state = getState_(van), now = now_();
     if (!state) return {success:false,error:"Check in first."};
     if (state.status === "MOVING") {
-      if (state.nextBranch === next) return {success:true,message:"Check-out already saved — heading to " + next,state:driverStateResponse_(state)};
+      if (state.nextBranch === next) {
+        var movingResponse = {success:true,message:"Check-out already saved — heading to " + next,state:driverStateResponse_(state)};
+        appendAudit_(data, user, state, state, movingResponse);
+        return movingResponse;
+      }
       return {success:false,error:"This van is already heading to " + state.nextBranch + "."};
     }
     if (!validDestination_(state.currentBranch,next)) return {success:false,error:"Choose a different valid branch."};
+    var previousState = {branch:state.currentBranch,status:state.status,round:state.round};
     var hold = seconds_(state.arrivalAt,now);
     state.nextBranch = next; state.status = "MOVING"; state.departureAt = now; writeState_(state);
     appendHistory_([Utilities.getUuid(),van,state.currentBranch,next,state.arrivalAt,now,hold,0,"MOVING",state.round,now]);
-    return {success:true,message:"Checked out — heading to " + next,state:driverStateResponse_(state)};
-  } finally { releaseVanLock_(van); }
+    var checkoutResponse = {success:true,message:"Checked out — heading to " + next,state:driverStateResponse_(state)};
+    appendAudit_(data, user, previousState, state, checkoutResponse);
+    return checkoutResponse;
+  } finally { lock.releaseLock(); }
+}
+
+function driverCorrectBranch_(data) {
+  var user = requireAuth_(data.token, ["driver","admin"]);
+  var van = cleanText_(data.vanNo,30), from = cleanBranch_(data.fromBranch), branch = cleanBranch_(data.branch);
+  if (!van || !validBranch_(from) || !validBranch_(branch) || from === branch) {
+    return {success:false,error:"Choose a different valid branch for the correction."};
+  }
+  var lock = LockService.getScriptLock(); lock.waitLock(15000);
+  try {
+    var requestId = requestId_(data); data._resolvedRequestId = requestId;
+    var replay = findAuditResponse_(requestId);
+    if (replay) return replay;
+    var state = getState_(van), now = now_();
+    if (!state || state.status !== "AT_STATION") return {success:false,error:"Only the current checked-in branch can be corrected."};
+    if (state.currentBranch === branch) {
+      var alreadyResponse = {success:true,message:"Branch correction already saved at " + branch,state:driverStateResponse_(state)};
+      appendAudit_(data, user, state, state, alreadyResponse);
+      return alreadyResponse;
+    }
+    if (state.currentBranch !== from) return {success:false,error:"The van state changed. Refresh before correcting it."};
+    var previousState = {branch:state.currentBranch,status:state.status,round:state.round};
+    state.currentBranch = branch;
+    writeState_(state);
+    appendHistory_([Utilities.getUuid(),van,from,branch,now,"",0,0,"CORRECTED",state.round,now]);
+    var correctionResponse = {success:true,message:"Branch corrected from " + from + " to " + branch,state:driverStateResponse_(state)};
+    appendAudit_(data, user, previousState, state, correctionResponse);
+    return correctionResponse;
+  } finally { lock.releaseLock(); }
 }
