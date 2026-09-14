@@ -15,7 +15,6 @@
     .header p{font-size:11px;color:var(--muted);margin-top:3px}
     .clock{position:absolute;right:12px;top:13px;color:var(--blue);font:800 12px monospace;text-align:right}
     .clock small{display:block;color:var(--muted);font:600 9px Segoe UI,Arial}
-    .offline-badge{position:fixed;top:0;left:0;right:0;background:#78350f;color:#fef3c7;text-align:center;font-size:11px;font-weight:800;letter-spacing:.05em;padding:5px;z-index:1500}
     .container{max-width:620px;margin:auto;padding:14px}
     .hidden{display:none!important}
     .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:12px;box-shadow:0 2px 7px #0f172a08}
@@ -27,75 +26,58 @@
     input:focus,select:focus,textarea:focus{outline:0;border-color:var(--blue);box-shadow:0 0 0 3px #2563eb18}
     textarea{min-height:86px;resize:vertical}
     .btn{border:0;border-radius:9px;padding:12px 14px;font-size:13px;font-weight:800;transition:.15s}
-    .btn:active{transform:scale(.98)}
-    .btn:disabled{opacity:.5;cursor:not-allowed}
-    .btn-full{width:100%}
-    .btn-red{background:var(--red);color:#fff}
-    .btn-blue{background:var(--blue);color:#fff}
-    .btn-green{background:var(--green);color:#fff}
-    .btn-grey{background:#f1f5f9;color:#334155;border:1px solid #cbd5e1}
-    .btn-outline{background:#fff;color:var(--red);border:1.5px solid var(--red)}
-    .mt{margin-top:10px}
-    .row{display:flex;gap:9px;align-items:end}
-    .grow{flex:1}
-    .login{max-width:390px;margin:30px auto}
-    .login h2{text-align:center;font-size:19px}
+    .btn:active{transform:scale(.98)}.btn:disabled{opacity:.5;cursor:not-allowed}
+    .btn-full{width:100%}.btn-red{background:var(--red);color:#fff}.btn-blue{background:var(--blue);color:#fff}.btn-green{background:var(--green);color:#fff}.btn-grey{background:#f1f5f9;color:#334155;border:1px solid #cbd5e1}.btn-outline{background:#fff;color:var(--red);border:1.5px solid var(--red)}
+    .mt{margin-top:10px}.row{display:flex;gap:9px;align-items:end}.grow{flex:1}
+    .login{max-width:390px;margin:30px auto}.login h2{text-align:center;font-size:19px}
     .login input{text-align:center;font-size:20px;letter-spacing:4px}
     .tabs{display:flex;gap:5px;background:#fff;border:1px solid var(--line);padding:4px;border-radius:11px;margin-bottom:13px}
     .tab{flex:1;border:0;background:transparent;color:var(--muted);border-radius:8px;padding:10px 5px;font-size:12px;font-weight:800}
     .tab.active{background:var(--red);color:#fff}
     .topbar{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:12px}
-    .identity{font-size:12px;color:var(--muted)}
-    .identity b{color:var(--red);font-size:14px}
-    .announcement{border:1px solid #fed7aa;background:#fff7ed;border-left:5px solid #f97316;border-radius:10px;padding:12px;margin:9px 0;animation:fadeSlide .2s ease}
+    .identity{font-size:12px;color:var(--muted)}.identity b{color:var(--red);font-size:14px}
+    .announcement{border:1px solid #fed7aa;background:#fff7ed;border-left:5px solid #f97316;border-radius:10px;padding:12px;margin:9px 0}
     .announcement .a-head{display:flex;justify-content:space-between;gap:8px;font-size:12px;font-weight:800;color:#9a3412}
     .announcement .a-body{font-size:14px;line-height:1.45;margin-top:7px;white-space:pre-wrap}
     .announcement .a-foot{font-size:10px;color:#78716c;margin-top:8px}
     .empty{text-align:center;color:#94a3b8;padding:18px 8px;font-size:13px}
     .branch-contact{border:1px solid var(--line);border-radius:11px;padding:12px;margin:9px 0;background:#fff}
     .branch-contact h4{font-size:14px;color:var(--blue);margin-bottom:6px}
-    .contact-line{font-size:13px;margin-top:4px}
-    .contact-line a{color:var(--blue);font-weight:700;text-decoration:none}
+    .contact-line{font-size:13px;margin-top:4px}.contact-line a{color:var(--blue);font-weight:700;text-decoration:none}
     .badge{display:inline-block;border-radius:999px;padding:3px 8px;font-size:10px;font-weight:800;background:#dbeafe;color:#1d4ed8}
-    .badge.green{background:#dcfce7;color:#166534}
-    .badge.red{background:#fee2e2;color:#991b1b}
-    .badge.orange{background:#ffedd5;color:#9a3412}
-    .driver-status{border-radius:12px;padding:15px;background:#eff6ff;border:1.5px solid #93c5fd;margin-top:12px;transition:background .2s ease,border-color .2s ease;animation:fadeSlide .2s ease}
-    .driver-status.moving{background:#f0fdf4;border-color:#86efac}
-    .driver-status h3{font-size:18px;margin-bottom:5px}
-    .timer{font:800 27px monospace;color:var(--blue);margin:10px 0;transition:color .2s ease}
-    .moving .timer{color:var(--green)}
-    @keyframes fadeSlide{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+    .badge.green{background:#dcfce7;color:#166534}.badge.red{background:#fee2e2;color:#991b1b}.badge.orange{background:#ffedd5;color:#9a3412}
+    .driver-status{border-radius:12px;padding:15px;background:#eff6ff;border:1.5px solid #93c5fd;margin-top:12px}
+    .driver-status.moving{background:#f0fdf4;border-color:#86efac}.driver-status h3{font-size:18px;margin-bottom:5px}
+    .timer{font:800 27px monospace;color:var(--blue);margin:10px 0}.moving .timer{color:var(--green)}
+     .van-card{border:1.5px solid var(--line);border-radius:11px;padding:13px;margin:9px 0;background:#f8fafc}
+     .van-card.moving{background:#f0fdf4;border-color:#86efac}
+     .van-card.station{background:#eff6ff;border-color:#93c5fd}
+     .van-head{display:flex;justify-content:space-between;gap:8px;align-items:center}
+     .van-title{font-size:15px;font-weight:800}.van-meta{font-size:12px;color:var(--muted);margin-top:5px}
+     .van-time{font:800 18px monospace;color:var(--blue);margin-top:7px}.van-card.moving .van-time{color:var(--green)}
+     .branch-counts{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:9px}
+     .branch-count{border:1px solid var(--line);border-radius:9px;padding:9px;background:#f8fafc;font-size:11px}
+     .branch-count b{display:block;color:var(--blue);font-size:15px;margin-bottom:2px}
+     .info-list{margin-top:9px}
+     .info-list .announcement,.info-list .branch-contact{margin:7px 0}
+     .sync-note{font-size:11px;color:var(--muted);margin-top:8px;min-height:15px}
     .branch-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px}
-    .branch-choice{background:#fff;border:2px solid var(--line);border-radius:10px;padding:13px 6px;color:#475569;font-size:12px;font-weight:800;transition:all .12s}
+    .branch-choice{background:#fff;border:2px solid var(--line);border-radius:10px;padding:13px 6px;color:#475569;font-size:12px;font-weight:800}
     .branch-choice.selected{background:var(--blue);border-color:var(--blue);color:#fff}
-    .branch-choice.picked{background:var(--green);border-color:var(--green);color:#fff;transform:scale(.96)}
-    .branch-choice:disabled{opacity:.5;cursor:not-allowed}
-    .toast{position:fixed;z-index:2000;top:15px;left:50%;transform:translateX(-50%);display:none;max-width:90%;padding:12px 18px;border-radius:9px;color:#fff;font-weight:800;font-size:13px;box-shadow:0 5px 18px #0003;text-align:center}
-    .toast.ok{background:var(--green)}
-    .toast.bad{background:var(--red)}
-    .toast.warn{background:#ca8a04}
+    .danger-note{background:#fff7ed;color:#9a3412;border:1px solid #fed7aa;border-radius:9px;padding:10px;font-size:12px;line-height:1.4}
+    .toast{position:fixed;z-index:20;top:15px;left:50%;transform:translateX(-50%);display:none;max-width:90%;padding:12px 18px;border-radius:9px;color:#fff;font-weight:800;font-size:13px;box-shadow:0 5px 18px #0003;text-align:center}
+    .toast.ok{background:var(--green)}.toast.bad{background:var(--red)}.toast.warn{background:#ca8a04}
     .bottom{position:fixed;z-index:10;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);padding:10px 14px;display:flex;justify-content:space-between;align-items:center;font-size:12px}
-    .bottom b{color:var(--red)}
-    .build{position:fixed;bottom:4px;right:5px;color:#cbd5e1;font:9px monospace}
-    .server-status{font-size:11px;color:var(--muted);margin-top:8px;min-height:14px;text-align:center}
-    .server-status.bad{color:var(--red);font-weight:700}
-    .server-status.ok{color:#15803d}
-    @media(max-width:420px){
-      .clock{position:static;text-align:center;margin-top:6px}
-      .row{flex-direction:column;align-items:stretch}
-      .row .btn{width:100%}
-    }
+    .bottom b{color:var(--red)}.build{position:fixed;bottom:4px;right:5px;color:#cbd5e1;font:9px monospace}
+    @media(max-width:420px){.clock{position:static;text-align:center;margin-top:6px}.row{flex-direction:column;align-items:stretch}.row .btn{width:100%}}
   </style>
 </head>
 <body>
-  <div class="offline-badge hidden" id="offlineBadge">OFFLINE</div>
   <header class="header">
     <h1>NCM BRANCH OPERATIONS</h1>
     <p>Announcements · Branch contacts · Driver check-out</p>
     <div class="clock" id="clock">--:--:--<small>--/--/----</small></div>
   </header>
-
   <div id="toast" class="toast"></div>
 
   <main class="container">
@@ -109,1023 +91,640 @@
     <section id="loginScreen" class="card login hidden">
       <h2>Branch / Driver Login</h2>
       <p class="muted" style="text-align:center">Use your assigned passcode.</p>
-
-      <input id="passcode"
-             type="password"
-             inputmode="numeric"
-             maxlength="12"
-             placeholder="Passcode"
+      <input id="passcode" type="password" inputmode="numeric" maxlength="12" placeholder="Passcode"
              onkeydown="if(event.key==='Enter') login()">
-
       <button class="btn btn-red btn-full mt" onclick="login()">Login</button>
     </section>
 
     <section id="app" class="hidden">
       <div class="topbar">
-        <div class="identity">
-          Signed in as <b id="identity">-</b><br>
-          <span id="role">-</span>
-        </div>
+        <div class="identity">Signed in as <b id="identity">-</b><br><span id="role">-</span></div>
         <button class="btn btn-grey" onclick="logout()">Logout</button>
       </div>
 
       <nav class="tabs">
-        <button class="tab active" id="tabDashboard" onclick="showTab('dashboard')">
-          Announcements
-        </button>
-
-        <button class="tab" id="tabContacts" onclick="showTab('contacts')">
-          Contacts
-        </button>
-
-        <button class="tab hidden" id="tabDriver" onclick="showTab('driver')">
-          Driver
-        </button>
+        <button class="tab active" id="tabDashboard" onclick="showTab('dashboard')">Announcements</button>
+        <button class="tab" id="tabContacts" onclick="showTab('contacts')">Contacts</button>
+       <button class="tab" id="tabVans" onclick="showTab('vans')">All Vans</button>
+        <button class="tab hidden" id="tabDriver" onclick="showTab('driver')">Driver</button>
       </nav>
 
       <section id="dashboardTab">
         <div class="card">
-          <h3>📢 Today's branch announcements</h3>
-          <p class="muted">
-            Announcements stay visible for 24 hours, then disappear automatically.
-          </p>
-
-          <div id="announcementList">
-            <div class="empty">Loading announcements…</div>
-          </div>
+          <h3>📢 Today’s branch announcements</h3>
+          <p class="muted">Announcements stay visible for 24 hours, then disappear automatically.</p>
+          <div id="announcementList"><div class="empty">Loading announcements…</div></div>
         </div>
-
         <div id="announcementFormCard" class="card">
           <h3>Post an announcement</h3>
-          <p class="muted">
-            This message will expire automatically after 24 hours.
-          </p>
-
+          <p class="muted">Use this for today’s operational message. It will expire automatically after 24 hours.</p>
           <label>Branch</label>
           <select id="announcementBranch"></select>
-
           <label>Message</label>
-          <textarea
-            id="announcementMessage"
-            maxlength="500"
-            placeholder="Example: B2B desk is handled by Ram today until 6 PM."
-          ></textarea>
-
-          <button
-            class="btn btn-full mt"
-            style="background:#f97316;color:#fff"
-            onclick="postAnnouncement()"
-          >
-            Publish for 24 hours
-          </button>
+          <textarea id="announcementMessage" maxlength="500" placeholder="Example: B2B desk is handled by Ram today until 6 PM."></textarea>
+          <button class="btn btn-orange btn-full mt" style="background:#f97316;color:#fff" onclick="postAnnouncement()">Publish for 24 hours</button>
         </div>
       </section>
 
       <section id="contactsTab" class="hidden">
         <div class="card">
           <h3>👤 B2B contact directory</h3>
-
-          <p class="muted">
-            Each branch can keep today's responsible B2B person and contact
-            number here. If a name or number is wrong, edit and save it again.
-          </p>
-
-          <div id="contactList">
-            <div class="empty">Loading contacts…</div>
-          </div>
+          <p class="muted">Each branch can keep today’s responsible B2B person and contact number here. If a name or number is wrong, edit and save it again.</p>
+          <div id="contactList"><div class="empty">Loading contacts…</div></div>
         </div>
-
         <div id="contactFormCard" class="card">
-          <h3>Update branch contact</h3>
-
-          <p class="muted">
-            Changes replace the previous contact for the selected branch.
-          </p>
-
+          <h3 id="contactFormTitle">Update my branch contact</h3>
+          <p class="muted">Changes replace the previous contact for the selected branch.</p>
           <label>Branch</label>
           <select id="contactBranch"></select>
-
           <label>Responsible person</label>
           <input id="contactName" maxlength="80" placeholder="Full name">
-
           <label>Phone number</label>
           <input id="contactPhone" maxlength="30" inputmode="tel" placeholder="98XXXXXXXX">
-
-          <label>Alternative number</label>
+          <label>Alternative number (optional)</label>
           <input id="contactAltPhone" maxlength="30" inputmode="tel" placeholder="Optional">
-
-          <label>Note</label>
-          <textarea
-            id="contactNote"
-            maxlength="240"
-            placeholder="Shift time, desk location, or other useful detail"
-          ></textarea>
-
-          <button class="btn btn-blue btn-full mt" onclick="saveContact()">
-            Save / correct contact
-          </button>
+          <label>Note (optional)</label>
+          <textarea id="contactNote" maxlength="240" placeholder="Shift time, desk location, or other useful detail"></textarea>
+          <button class="btn btn-blue btn-full mt" onclick="saveContact()">Save / correct contact</button>
         </div>
       </section>
+
+       <section id="vansTab" class="hidden">
+         <div class="card">
+           <div class="topbar">
+             <div>
+               <h3>🚐 All vans live board</h3>
+               <p class="muted">See every van’s current branch or destination. This board refreshes automatically.</p>
+             </div>
+             <button class="btn btn-grey" onclick="loadVanBoard()">Refresh</button>
+           </div>
+           <div id="vanBoardList"><div class="empty">Loading vans…</div></div>
+         </div>
+       </section>
 
       <section id="driverTab" class="hidden">
         <div class="card">
           <h3>🚐 Driver check-in / check-out</h3>
-
-          <p class="muted">
-            All seven branches use the same rule. At check-out, type the next
-            branch name, for example <b>CHABAHIL</b>, or tap one below.
-          </p>
-
+           <p class="muted">All seven branches use the same rule. Your van and actions stay saved on this phone if the internet stops.</p>
           <label>Van number</label>
-
           <div class="row">
-            <input id="driverVan" class="grow" placeholder="Example: 843">
-            <button class="btn btn-grey" onclick="changeDriverVan()">
-              Change van
-            </button>
+             <input id="driverVan" class="grow" placeholder="Example: 843" onchange="rememberVanNumber()">
+            <button class="btn btn-grey" onclick="changeDriverVan()">Change van</button>
           </div>
-
-          <p class="muted mt">
-            Use "Change van" if you entered the wrong van number.
-          </p>
-
+          <p class="muted mt">Use “Change van” if you entered the wrong van before continuing.</p>
           <div id="driverState" class="driver-status hidden"></div>
-          <div id="driverServerStatus" class="server-status" aria-live="polite"></div>
+           <div id="branchCountList" class="branch-counts"></div>
+           <div id="driverSyncNote" class="sync-note"></div>
         </div>
 
-        <div class="card">
+        <div class="card" id="driverActionCard">
           <h3 id="driverActionTitle">Select your current branch</h3>
-
-          <p class="muted">
-            Tap the branch where the van is now to check in.
-          </p>
-
+          <p class="muted">Tap the branch where the van is now to check in.</p>
           <div id="checkInBranches" class="branch-grid"></div>
-
           <div id="checkoutArea" class="hidden">
             <label>Next branch for check-out</label>
-
-            <input
-              id="nextBranch"
-              list="branchNames"
-              autocomplete="off"
-              placeholder="Type CHABAHIL or choose below"
-            >
-
+            <input id="nextBranch" list="branchNames" autocomplete="off" placeholder="Type CHABAHIL or choose below">
             <datalist id="branchNames"></datalist>
-
             <div id="checkoutBranches" class="branch-grid"></div>
-
-            <button class="btn btn-red btn-full mt" onclick="driverCheckOut()">
-              Check out to this branch
-            </button>
+            <button class="btn btn-red btn-full mt" onclick="driverCheckOut()">Check out to this branch</button>
           </div>
         </div>
+         <div class="card hidden" id="correctionCard">
+           <h3>Correct current branch</h3>
+           <p class="muted">Use this only when the wrong branch was selected. The original selection will remain in the audit history.</p>
+           <label>Correct branch</label>
+           <select id="correctionBranch"></select>
+           <button class="btn btn-blue btn-full mt" onclick="correctDriverBranch()">Save correction</button>
+         </div>
+         <div class="card" id="driverInfoCard">
+           <h3>📢 Announcements & branch details</h3>
+           <p class="muted">Cached information remains available when the phone is offline.</p>
+           <h4 style="margin-top:12px">Announcements</h4>
+           <div id="driverAnnouncementList" class="info-list"><div class="empty">Loading announcements…</div></div>
+           <h4 style="margin-top:16px">Branch contacts</h4>
+           <div id="driverContactList" class="info-list"><div class="empty">Loading contacts…</div></div>
+         </div>
       </section>
     </section>
   </main>
 
   <footer id="bottomBar" class="bottom hidden">
     <span>Branch: <b id="bottomBranch">-</b></span>
-    <span id="onlineStatus">Online</span>
+   <span id="onlineStatus">Online · All synced</span>
   </footer>
-
-  <div class="build" id="buildTag">v22-fast</div>
+   <div class="build">v23-offline-driver</div>
 
   <script>
-    /* ═══════════════════════════════════════════════════════
-       NCM BRANCH OPERATIONS — FRONTEND v22-fast
-       Smoothness fixes in this version:
-       - Check-in/check-out update the screen INSTANTLY on tap, before the
-         server even responds. The save happens quietly in the background;
-         the screen only reverts if the server actually rejects it.
-       - The hold/travel timer is anchored to a real timestamp instead of
-         incrementing +1 per tick, so it can never drift or freeze if the
-         phone throttles the tab in the background.
-       - The app re-syncs itself immediately when the phone's screen comes
-         back on, instead of waiting for a possibly-stalled poll timer.
-       - A visible build tag (bottom-right) shows both the app version and
-         the live server's version, so a stale deployment is obvious at a
-         glance instead of guesswork.
-    ═══════════════════════════════════════════════════════ */
-
-    const APP_VERSION = "v22-fast";
-
-    const BRANCHES = [
-      "NAYA BUSPARK",
-      "BASUNDHARA",
-      "CHABAHIL",
-      "TINKUNE",
-      "SATDOBATO",
-      "KALANKI",
-      "SWOYAMBHU"
-    ];
-
+    const BRANCHES = ["NAYA BUSPARK","BASUNDHARA","CHABAHIL","TINKUNE","SATDOBATO","KALANKI","SWOYAMBHU"];
+     const APP_VERSION = "v23-offline-driver";
     let SCRIPT_URL = localStorage.getItem("ncm_url") || "";
     let session = JSON.parse(localStorage.getItem("ncm_session") || "null");
     let driverState = null;
     let pollTimer = null;
-    let tickTimer = null;
-
-    // Anchor-based elapsed time — see driver-status rendering below.
-    let elapsedAnchorAt = 0;
-    let elapsedAnchorValue = 0;
-    let lastElapsedInput = null;
+     let driverClockTimer = null;
+     let vanBoardTimer = null;
+     const DRIVER_QUEUE_KEY = "ncm_driver_sync_queue_v1";
+     const DRIVER_STATE_PREFIX = "ncm_driver_state_";
+     const ANNOUNCEMENTS_CACHE_KEY = "ncm_announcements_cache_v1";
+     const CONTACTS_CACHE_KEY = "ncm_contacts_cache_v1";
+     const VAN_BOARD_CACHE_KEY = "ncm_van_board_cache_v1";
 
     const $ = id => document.getElementById(id);
-
-    const esc = value =>
-      String(value == null ? "" : value)
-        .replace(/[&<>"']/g, c => ({
-          "&":"&amp;",
-          "<":"&lt;",
-          ">":"&gt;",
-          '"':"&quot;",
-          "'":"&#39;"
-        }[c]));
-
+    const esc = value => String(value == null ? "" : value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
     const normalizeBranch = value => {
-      const v = String(value || "")
-        .toUpperCase()
-        .trim()
-        .replace(/\s+/g, " ");
-
+      const v = String(value || "").toUpperCase().trim().replace(/\s+/g, " ");
       return v === "CHABHIL" ? "CHABAHIL" : v;
     };
-
-    const formatDate = value =>
-      value
-        ? new Date(value).toLocaleString("en-GB", {
-            timeZone:"Asia/Kathmandu",
-            day:"2-digit",
-            month:"2-digit",
-            hour:"2-digit",
-            minute:"2-digit"
-          })
-        : "-";
-
+    const formatDate = value => value ? new Date(value).toLocaleString("en-GB",{timeZone:"Asia/Kathmandu",day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"}) : "-";
     const formatSeconds = total => {
       total = Math.max(0, Math.floor(Number(total) || 0));
-
-      return String(Math.floor(total / 3600)).padStart(2,"0") + ":" +
-             String(Math.floor(total % 3600 / 60)).padStart(2,"0") + ":" +
-             String(total % 60).padStart(2,"0");
+      return String(Math.floor(total/3600)).padStart(2,"0")+":"+String(Math.floor(total%3600/60)).padStart(2,"0")+":"+String(total%60).padStart(2,"0");
     };
+     function readCache(key, fallback) {
+       try { const value = JSON.parse(localStorage.getItem(key) || "null"); return value == null ? fallback : value; }
+       catch(e) { return fallback; }
+     }
+     function writeCache(key, value) {
+       try { localStorage.setItem(key, JSON.stringify(value)); } catch(e) {}
+     }
+     function newRequestId() {
+       return (window.crypto && crypto.randomUUID)
+         ? crypto.randomUUID()
+         : "ncm-" + Date.now() + "-" + Math.random().toString(36).slice(2);
+     }
+     function driverQueue() {
+       const queue = readCache(DRIVER_QUEUE_KEY, []);
+       return Array.isArray(queue) ? queue : [];
+     }
+     function saveDriverQueue(queue) { writeCache(DRIVER_QUEUE_KEY, queue); updateSyncIndicator(); }
+     function activeVanNumber() { return ($("driverVan") && $("driverVan").value.trim()) || localStorage.getItem("ncm_driver_van") || ""; }
+     function setVanInputLock() {
+       const input = $("driverVan");
+       if (input) input.disabled = !!localStorage.getItem("ncm_driver_van");
+     }
+     function driverStateKey(vanNo) { return DRIVER_STATE_PREFIX + encodeURIComponent(String(vanNo)); }
+     function saveLocalDriverState(state) {
+       driverState = state || null;
+       if (state && state.vanNo) writeCache(driverStateKey(state.vanNo), state);
+       renderDriverState(driverState);
+     }
+     function loadLocalDriverState(vanNo) {
+       const state = readCache(driverStateKey(vanNo), null);
+       return state && state.vanNo ? state : null;
+     }
+     function pendingDriverQueue(vanNo) {
+       return driverQueue().filter(item => String(item.vanNo) === String(vanNo));
+     }
+     function updateSyncIndicator() {
+       const count = driverQueue().length;
+       const online = navigator.onLine !== false;
+       const text = online
+         ? (count ? "Online · " + count + " action" + (count === 1 ? "" : "s") + " waiting to sync" : "Online · All synced")
+         : (count ? "Offline · " + count + " action" + (count === 1 ? "" : "s") + " waiting to sync" : "Offline · Changes save on this phone");
+       if ($("onlineStatus")) $("onlineStatus").textContent = text;
+       if ($("driverSyncNote")) $("driverSyncNote").textContent = text;
+     }
+     function applyQueuedDriverState(state, vanNo) {
+       let next = state || {vanNo:vanNo, started:false, status:"NOT_STARTED", branch:null, nextBranch:null, round:0, elapsedSeconds:0};
+       pendingDriverQueue(vanNo).forEach(item => {
+         const data = item.data || {};
+         if (item.action === "driverCheckIn") {
+           next = {vanNo:vanNo, started:true, status:"AT_STATION", branch:normalizeBranch(data.branch), nextBranch:null,
+             round:Number(next.round) || 1, elapsedSeconds:0, arrivalAt:data.localAt || item.localAt, localOnly:true};
+         } else if (item.action === "driverCheckOut") {
+           next = {vanNo:vanNo, started:true, status:"MOVING", branch:next.branch || normalizeBranch(data.fromBranch),
+             nextBranch:normalizeBranch(data.nextBranch), round:Number(next.round) || 1, elapsedSeconds:0,
+             departureAt:data.localAt || item.localAt, localOnly:true};
+         } else if (item.action === "driverCorrectBranch") {
+           next = Object.assign({}, next, {branch:normalizeBranch(data.branch), localOnly:true});
+         }
+       });
+       return next;
+     }
+     function stateElapsedSeconds(state) {
+       const timestamp = state && (state.status === "MOVING" ? state.departureAt : state.arrivalAt);
+       const elapsed = timestamp ? Math.floor((Date.now() - new Date(timestamp).getTime()) / 1000) : Number(state && state.elapsedSeconds) || 0;
+       return Math.max(0, elapsed);
+     }
+     function queueDriverAction(action, data) {
+       const requestId = newRequestId();
+       const item = {id:requestId, requestId:requestId, action:action, data:Object.assign({}, data, {action:action, requestId:requestId}),
+         vanNo:data.vanNo, localAt:new Date().toISOString(), attempts:0};
+       const queue = driverQueue();
+       queue.push(item); saveDriverQueue(queue);
+       return item;
+     }
 
     function toast(message, type="ok") {
-      const el = $("toast");
-
-      el.textContent = message;
-      el.className = "toast " + type;
-      el.style.display = "block";
-
-      clearTimeout(el._timer);
-
-      el._timer = setTimeout(() => {
-        el.style.display = "none";
-      }, 3200);
+      const el = $("toast"); el.textContent = message; el.className = "toast " + type; el.style.display = "block";
+      clearTimeout(el._timer); el._timer = setTimeout(() => el.style.display = "none", 3200);
     }
-
-    function setDriverServerStatus(message, kind) {
-      const el = $("driverServerStatus");
-      if (!el) return;
-      el.textContent = message || "";
-      el.className = "server-status" + (kind ? " " + kind : "");
-    }
-
     function apiGet(params) {
-      const ctrl = new AbortController();
-      const tid = setTimeout(() => ctrl.abort(), 8000);
-      const query = new URLSearchParams(
-        Object.assign({}, params, {
-          token: session && session.token || ""
-        })
-      );
-
-      return fetch(SCRIPT_URL + "?" + query.toString(), { signal: ctrl.signal })
-        .then(response => response.json())
-        .finally(() => clearTimeout(tid));
+      const q = new URLSearchParams(Object.assign({}, params, {token: session && session.token || ""}));
+      return fetch(SCRIPT_URL + "?" + q.toString()).then(r => r.json());
     }
-
     function apiPost(body) {
-      const ctrl = new AbortController();
-      const tid = setTimeout(() => ctrl.abort(), 10000);
-
-      return fetch(SCRIPT_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type":"text/plain;charset=utf-8"
-        },
-        body: JSON.stringify(
-          Object.assign({}, body, {
-            token: session && session.token || ""
-          })
-        ),
-        signal: ctrl.signal
-      }).then(response => response.json())
-        .finally(() => clearTimeout(tid));
+      return fetch(SCRIPT_URL, {method:"POST", headers:{"Content-Type":"text/plain;charset=utf-8"},
+        body:JSON.stringify(Object.assign({}, body, {token: session && session.token || ""}))}).then(r => r.json());
     }
-
-    async function checkServerVersion() {
-      try {
-        const res = await apiGet({ action: "getVersion" });
-        const tag = $("buildTag");
-        if (res && res.success && tag) tag.textContent = APP_VERSION + " · server " + res.version;
-      } catch(e) {}
-    }
-
     function saveUrl() {
       const url = $("scriptUrl").value.trim();
-
-      if (!/\/exec(?:\?|$)/.test(url)) {
-        return toast("Use the deployed URL ending in /exec", "bad");
-      }
-
-      localStorage.setItem("ncm_url", url);
-      SCRIPT_URL = url;
-      boot();
+      if (!/\/exec(?:\?|$)/.test(url)) return toast("Use the deployed URL ending in /exec", "bad");
+      localStorage.setItem("ncm_url", url); SCRIPT_URL = url; boot();
     }
-
     async function login() {
       const passcode = $("passcode").value.trim();
-
-      if (!passcode) {
-        return toast("Enter your passcode", "bad");
-      }
-
+      if (!passcode) return toast("Enter your passcode", "bad");
       try {
-        const result = await apiPost({
-          action:"login",
-          passcode
-        });
-
-        if (!result.success) {
-          return toast(result.error || "Login failed", "bad");
-        }
-
-        session = result.session;
-        localStorage.setItem("ncm_session", JSON.stringify(session));
-
-        showApp();
-      } catch (error) {
-        toast("Could not connect to Apps Script", "bad");
-      }
+        const result = await apiPost({action:"login", passcode});
+        if (!result.success) return toast(result.error || "Login failed", "bad");
+        session = result.session; localStorage.setItem("ncm_session", JSON.stringify(session)); showApp();
+      } catch (e) { toast("Could not connect to Apps Script", "bad"); }
     }
-
     function logout() {
-      if (session && session.token) {
-        apiPost({action:"logout"}).catch(() => {});
-      }
-
-      localStorage.removeItem("ncm_session");
-      location.reload();
+      if (session && session.token) apiPost({action:"logout"}).catch(()=>{});
+      localStorage.removeItem("ncm_session"); location.reload();
     }
-
     function fillBranchSelect(id, includeAll=false) {
-      const select = $(id);
-
-      if (!select) return;
-
-      select.innerHTML =
-        (includeAll ? '<option value="">Select branch</option>' : "") +
-        BRANCHES.map(branch =>
-          `<option value="${esc(branch)}">${esc(branch)}</option>`
-        ).join("");
+      const select = $(id); if (!select) return;
+      select.innerHTML = (includeAll ? '<option value="">Select branch</option>' : "") +
+        BRANCHES.map(branch => `<option value="${esc(branch)}">${esc(branch)}</option>`).join("");
     }
-
     function showApp() {
-      $("loginScreen").classList.add("hidden");
-      $("setupCard").classList.add("hidden");
-      $("app").classList.remove("hidden");
-      $("bottomBar").classList.remove("hidden");
-
-      const isDriver = session.role === "driver";
-      const isAdmin = session.role === "admin";
-
-      $("identity").textContent =
-        isDriver ? "DRIVER" : (session.branch || "ADMIN");
-
-      $("role").textContent =
-        String(session.role || "").toUpperCase();
-
-      $("bottomBranch").textContent =
-        isDriver ? "DRIVER" : (session.branch || "ADMIN");
-
-      $("tabDriver").classList.toggle(
-        "hidden",
-        !(isDriver || isAdmin)
-      );
-
-      $("announcementFormCard").classList.toggle(
-        "hidden",
-        isDriver
-      );
-
-      $("contactFormCard").classList.toggle(
-        "hidden",
-        isDriver
-      );
-
-      fillBranchSelect("announcementBranch", isAdmin);
-      fillBranchSelect("contactBranch", isAdmin);
-
-      if (!isAdmin && !isDriver) {
-        $("announcementBranch").value = session.branch;
-        $("contactBranch").value = session.branch;
-      }
-
-      if (isDriver) {
-        $("tabDriver").classList.remove("hidden");
-        showTab("driver");
-        initDriver();
-      } else {
-        showTab("dashboard");
-      }
-
-      loadAnnouncements();
-      loadContacts();
+      $("loginScreen").classList.add("hidden"); $("setupCard").classList.add("hidden"); $("app").classList.remove("hidden"); $("bottomBar").classList.remove("hidden");
+      const isDriver = session.role === "driver", isAdmin = session.role === "admin";
+      $("identity").textContent = isDriver ? "DRIVER" : (session.branch || "ADMIN");
+      $("role").textContent = String(session.role || "").toUpperCase();
+      $("bottomBranch").textContent = isDriver ? "DRIVER" : (session.branch || "ADMIN");
+      $("tabDriver").classList.toggle("hidden", !(isDriver || isAdmin));
+       $("tabVans").classList.remove("hidden");
+      $("announcementFormCard").classList.toggle("hidden", isDriver);
+      $("contactFormCard").classList.toggle("hidden", isDriver);
+      fillBranchSelect("announcementBranch", isAdmin); fillBranchSelect("contactBranch", isAdmin);
+      if (!isAdmin && !isDriver) { $("announcementBranch").value = session.branch; $("contactBranch").value = session.branch; }
+      if (isDriver) { $("tabDriver").classList.remove("hidden"); showTab("driver"); initDriver(); }
+      else showTab("dashboard");
+      loadAnnouncements(); loadContacts();
     }
-
     function showTab(tab) {
-      ["dashboard","contacts","driver"].forEach(name => {
-        $(name + "Tab").classList.toggle("hidden", name !== tab);
-      });
-
-      ["Dashboard","Contacts","Driver"].forEach(name => {
-        $("tab" + name).classList.toggle(
-          "active",
-          name.toLowerCase() === tab
-        );
-      });
-
-      if (tab === "driver") {
-        initDriver();
-      }
+       ["dashboard","contacts","vans","driver"].forEach(name => $(name+"Tab").classList.toggle("hidden", name !== tab));
+       ["Dashboard","Contacts","Vans","Driver"].forEach(name => $("tab"+name).classList.toggle("active", name.toLowerCase() === tab));
+      if (tab === "driver") initDriver();
+       if (tab === "vans" || tab === "driver") startVanBoardPolling();
+       else stopVanBoardPolling();
     }
-
+     function renderAnnouncements(rows, targetId) {
+       const list = $(targetId);
+       if (!list) return;
+       list.innerHTML = rows.length ? rows.map(a => `<article class="announcement">
+         <div class="a-head"><span>${esc(a.branch)}</span><span class="badge orange">24 HOUR</span></div>
+         <div class="a-body">${esc(a.message)}</div>
+         <div class="a-foot">Posted by ${esc(a.createdBy || a.branch)} · expires ${formatDate(a.expiresAt)}</div>
+       </article>`).join("") : '<div class="empty">No active announcements.</div>';
+     }
     async function loadAnnouncements() {
+       const cached = readCache(ANNOUNCEMENTS_CACHE_KEY, []);
+       if (Array.isArray(cached) && cached.length) {
+         renderAnnouncements(cached, "announcementList");
+         renderAnnouncements(cached, "driverAnnouncementList");
+       }
       try {
-        const result = await apiGet({
-          action:"getAnnouncements"
-        });
-
-        if (!result.success) {
-          throw Error(result.error);
-        }
-
-        const list = $("announcementList");
-        const rows = result.data || [];
-
-        list.innerHTML = rows.length
-          ? rows.map(a => `
-              <article class="announcement">
-                <div class="a-head">
-                  <span>${esc(a.branch)}</span>
-                  <span class="badge orange">24 HOUR</span>
-                </div>
-
-                <div class="a-body">${esc(a.message)}</div>
-
-                <div class="a-foot">
-                  Posted by ${esc(a.createdBy || a.branch)}
-                  · expires ${formatDate(a.expiresAt)}
-                </div>
-              </article>
-            `).join("")
-          : '<div class="empty">No active announcements.</div>';
-      } catch (error) {
-        $("announcementList").innerHTML =
-          '<div class="empty">Announcements unavailable.</div>';
-      }
+        const result = await apiGet({action:"getAnnouncements"});
+        if (!result.success) throw Error(result.error);
+         const rows = result.data || [];
+         writeCache(ANNOUNCEMENTS_CACHE_KEY, rows);
+         renderAnnouncements(rows, "announcementList");
+         renderAnnouncements(rows, "driverAnnouncementList");
+       } catch(e) {
+         if (!cached.length) {
+           renderAnnouncements([], "announcementList");
+           renderAnnouncements([], "driverAnnouncementList");
+         }
+       }
     }
-
     async function postAnnouncement() {
-      const message = $("announcementMessage").value.trim();
-      const branch = normalizeBranch($("announcementBranch").value);
-
-      if (!branch || !BRANCHES.includes(branch)) {
-        return toast("Choose a branch", "bad");
-      }
-
-      if (!message) {
-        return toast("Write the announcement first", "bad");
-      }
-
+      const message = $("announcementMessage").value.trim(), branch = normalizeBranch($("announcementBranch").value);
+      if (!branch || !BRANCHES.includes(branch)) return toast("Choose a branch", "bad");
+      if (!message) return toast("Write the announcement first", "bad");
       try {
-        const result = await apiPost({
-          action:"createAnnouncement",
-          branch,
-          message
-        });
-
-        if (!result.success) {
-          return toast(result.error || "Could not publish", "bad");
-        }
-
-        $("announcementMessage").value = "";
-        toast("Announcement published for 24 hours");
-        loadAnnouncements();
-      } catch (error) {
-        toast("Network error", "bad");
-      }
+        const result = await apiPost({action:"createAnnouncement", branch, message});
+        if (!result.success) return toast(result.error || "Could not publish", "bad");
+        $("announcementMessage").value = ""; toast("Announcement published for 24 hours"); loadAnnouncements();
+      } catch(e) { toast("Network error", "bad"); }
     }
-
     async function loadContacts() {
+       const cached = readCache(CONTACTS_CACHE_KEY, []);
+       if (Array.isArray(cached) && cached.length) renderContacts(cached);
       try {
-        const result = await apiGet({
-          action:"getContacts"
-        });
-
-        if (!result.success) {
-          throw Error(result.error);
-        }
-
+        const result = await apiGet({action:"getContacts"}); if (!result.success) throw Error(result.error);
         const contacts = result.data || [];
-
-        window._contacts = {};
-        contacts.forEach(contact => {
-          window._contacts[contact.branch] = contact;
+         writeCache(CONTACTS_CACHE_KEY, contacts);
+         renderContacts(contacts);
+       } catch(e) { if (!cached.length) renderContacts([]); }
+     }
+     function renderContacts(contacts) {
+       window._contacts = {}; contacts.forEach(contact => { window._contacts[contact.branch] = contact; });
+       const html = BRANCHES.map(branch => {
+         const c = contacts.find(item => item.branch === branch) || {};
+         return `<article class="branch-contact"><h4>${esc(branch)} ${c.name ? '<span class="badge green">UPDATED</span>' : '<span class="badge">NO CONTACT YET</span>'}</h4>
+           ${c.name ? `<div class="contact-line"><b>${esc(c.name)}</b></div><div class="contact-line">☎ <a href="tel:${esc(c.phone)}">${esc(c.phone)}</a>${c.altPhone ? ` · <a href="tel:${esc(c.altPhone)}">${esc(c.altPhone)}</a>` : ""}</div>${c.note ? `<div class="contact-line muted">${esc(c.note)}</div>` : ""}<div class="muted" style="margin-top:6px">Updated ${formatDate(c.updatedAt)}</div>` : '<div class="muted">No responsible person has been added.</div>'}
+           ${session.role !== "driver" && (session.role === "admin" || session.branch === branch) ? `<button class="btn btn-grey mt" onclick="editContact('${esc(branch)}')">Edit this contact</button>` : ""}</article>`;
+       }).join("");
+       if ($("contactList")) $("contactList").innerHTML = html;
+       if ($("driverContactList")) $("driverContactList").innerHTML = html.replace(/<button[\s\S]*?<\/button>/g, "");
+    }
+     function startVanBoardPolling() {
+       loadVanBoard();
+       clearInterval(vanBoardTimer);
+       vanBoardTimer = setInterval(loadVanBoard, 10000);
+     }
+     function stopVanBoardPolling() {
+       clearInterval(vanBoardTimer);
+       vanBoardTimer = null;
+     }
+     async function loadVanBoard() {
+       const list = $("vanBoardList");
+       if (!list || !session || !session.token) return;
+        const cached = readCache(VAN_BOARD_CACHE_KEY, []);
+        if (Array.isArray(cached) && cached.length) renderVanBoard(cached);
+       try {
+         const result = await apiGet({action:"getVanBoard"});
+         if (!result.success) throw Error(result.error || "Could not load vans");
+          const vans = result.data || [];
+          writeCache(VAN_BOARD_CACHE_KEY, vans);
+          renderVanBoard(vans);
+       } catch(e) {
+          if (!cached.length) list.innerHTML = '<div class="empty">Van board unavailable. Tap Refresh to try again.</div>';
+       }
+     }
+     function renderVanBoard(vans) {
+       const list = $("vanBoardList");
+        renderBranchCounts(vans);
+       if (!vans.length) {
+          if (list) list.innerHTML = '<div class="empty">No van has checked in today.</div>';
+         return;
+       }
+        if (!list) return;
+       list.innerHTML = vans.map(v => {
+         const moving = String(v.status || "").toUpperCase() === "MOVING";
+         const title = moving
+           ? esc(v.fromBranch) + " → " + esc(v.toBranch)
+           : "At " + esc(v.branch);
+         const badge = moving
+           ? '<span class="badge green">MOVING</span>'
+           : '<span class="badge">AT BRANCH</span>';
+         return `<article class="van-card ${moving ? "moving" : "station"}">
+           <div class="van-head"><span class="van-title">Van ${esc(v.vanNo)}</span>${badge}</div>
+           <div class="van-meta">${title} · Round ${esc(v.round)}</div>
+           <div class="van-time">${formatSeconds(v.elapsedSeconds)}</div>
+         </article>`;
+       }).join("");
+     }
+      function renderBranchCounts(vans) {
+        const list = $("branchCountList");
+        if (!list) return;
+        const counts = {};
+        BRANCHES.forEach(branch => { counts[branch] = {at:0, incoming:0}; });
+        (vans || []).forEach(v => {
+          if (String(v.status || "").toUpperCase() === "MOVING") {
+            const destination = normalizeBranch(v.toBranch);
+            if (counts[destination]) counts[destination].incoming++;
+          } else {
+            const branch = normalizeBranch(v.branch);
+            if (counts[branch]) counts[branch].at++;
+          }
         });
-
-        $("contactList").innerHTML = BRANCHES.map(branch => {
-          const contact =
-            contacts.find(item => item.branch === branch) || {};
-
-          return `
-            <article class="branch-contact">
-              <h4>
-                ${esc(branch)}
-                ${
-                  contact.name
-                    ? '<span class="badge green">UPDATED</span>'
-                    : '<span class="badge">NO CONTACT YET</span>'
-                }
-              </h4>
-
-              ${
-                contact.name
-                  ? `
-                    <div class="contact-line">
-                      <b>${esc(contact.name)}</b>
-                    </div>
-
-                    <div class="contact-line">
-                      ☎
-                      <a href="tel:${esc(contact.phone)}">
-                        ${esc(contact.phone)}
-                      </a>
-
-                      ${
-                        contact.altPhone
-                          ? `
-                            ·
-                            <a href="tel:${esc(contact.altPhone)}">
-                              ${esc(contact.altPhone)}
-                            </a>
-                          `
-                          : ""
-                      }
-                    </div>
-
-                    ${
-                      contact.note
-                        ? `
-                          <div class="contact-line muted">
-                            ${esc(contact.note)}
-                          </div>
-                        `
-                        : ""
-                    }
-
-                    <div class="muted" style="margin-top:6px">
-                      Updated ${formatDate(contact.updatedAt)}
-                    </div>
-                  `
-                  : '<div class="muted">No responsible person has been added.</div>'
-              }
-
-              ${
-                session.role === "admin" || session.branch === branch
-                  ? `
-                    <button
-                      class="btn btn-grey mt"
-                      onclick="editContact('${esc(branch)}')"
-                    >
-                      Edit this contact
-                    </button>
-                  `
-                  : ""
-              }
-            </article>
-          `;
+        list.innerHTML = BRANCHES.map(branch => {
+          const c = counts[branch];
+          return `<div class="branch-count"><b>${c.at} at · ${c.incoming} inbound</b>${esc(branch)}</div>`;
         }).join("");
-      } catch (error) {
-        $("contactList").innerHTML =
-          '<div class="empty">Contacts unavailable.</div>';
       }
-    }
-
     function editContact(branch) {
-      $("contactBranch").value = branch;
-
-      const contact =
-        window._contacts && window._contacts[branch];
-
-      if (contact) {
-        $("contactName").value = contact.name || "";
-        $("contactPhone").value = contact.phone || "";
-        $("contactAltPhone").value = contact.altPhone || "";
-        $("contactNote").value = contact.note || "";
+      $("contactBranch").value = branch; $("contactsTab").scrollIntoView({behavior:"smooth"});
+      const contact = window._contacts && window._contacts[branch]; if (contact) {
+        $("contactName").value = contact.name || ""; $("contactPhone").value = contact.phone || "";
+        $("contactAltPhone").value = contact.altPhone || ""; $("contactNote").value = contact.note || "";
       }
-
-      $("contactsTab").scrollIntoView({
-        behavior:"smooth"
-      });
     }
-
     async function saveContact() {
-      const branch = normalizeBranch($("contactBranch").value);
-      const name = $("contactName").value.trim();
-      const phone = $("contactPhone").value.trim();
-
-      if (!branch || !BRANCHES.includes(branch)) {
-        return toast("Choose a branch", "bad");
-      }
-
-      if (!name || !phone) {
-        return toast("Name and phone are required", "bad");
-      }
-
+      const branch = normalizeBranch($("contactBranch").value), name = $("contactName").value.trim(), phone = $("contactPhone").value.trim();
+      if (!branch || !BRANCHES.includes(branch)) return toast("Choose a branch", "bad");
+      if (!name || !phone) return toast("Name and phone are required", "bad");
       try {
-        const result = await apiPost({
-          action:"saveContact",
-          branch,
-          name,
-          phone,
-          altPhone:$("contactAltPhone").value.trim(),
-          note:$("contactNote").value.trim()
-        });
-
-        if (!result.success) {
-          return toast(result.error || "Could not save contact", "bad");
-        }
-
-        toast("Contact saved / corrected");
-        loadContacts();
-      } catch (error) {
-        toast("Network error", "bad");
-      }
+        const result = await apiPost({action:"saveContact", branch, name, phone, altPhone:$("contactAltPhone").value.trim(), note:$("contactNote").value.trim()});
+        if (!result.success) return toast(result.error || "Could not save contact", "bad");
+        toast("Contact saved / corrected"); loadContacts();
+      } catch(e) { toast("Network error", "bad"); }
     }
-
     function initDriver() {
-      if (session.role !== "driver" && session.role !== "admin") {
-        return;
-      }
-
-      $("driverVan").value =
-        localStorage.getItem("ncm_driver_van") || "";
-
-      $("checkInBranches").innerHTML = BRANCHES.map(branch =>
-        `
-          <button
-            class="branch-choice"
-            onclick="selectCheckIn('${esc(branch)}', this)"
-          >
-            ${esc(branch)}
-          </button>
-        `
-      ).join("");
-
-      $("branchNames").innerHTML = BRANCHES.map(branch =>
-        `<option value="${esc(branch)}">`
-      ).join("");
-
-      loadDriverState();
-
-      clearInterval(pollTimer);
-      pollTimer = setInterval(loadDriverState, 10000);
-
-      clearInterval(tickTimer);
-      tickTimer = setInterval(tickDriverClock, 1000);
+      if (session.role !== "driver" && session.role !== "admin") return;
+       $("driverVan").value = localStorage.getItem("ncm_driver_van") || "";
+       setVanInputLock();
+      $("checkInBranches").innerHTML = BRANCHES.map(b => `<button class="branch-choice" onclick="selectCheckIn('${esc(b)}')">${esc(b)}</button>`).join("");
+      $("datalist")?.remove(); $("branchNames").innerHTML = BRANCHES.map(b => `<option value="${esc(b)}">`).join("");
+       $("correctionBranch").innerHTML = BRANCHES.map(b => `<option value="${esc(b)}">${esc(b)}</option>`).join("");
+       const vanNo = activeVanNumber();
+       if (vanNo) {
+         driverState = applyQueuedDriverState(loadLocalDriverState(vanNo), vanNo);
+         renderDriverState(driverState);
+         flushDriverQueue();
+         loadDriverState();
+       } else {
+         renderDriverState(null);
+       }
+       clearInterval(pollTimer); pollTimer = setInterval(loadDriverState, 10000);
+       clearInterval(driverClockTimer); driverClockTimer = setInterval(tickDriverTimer, 1000);
+       updateSyncIndicator();
     }
-
     async function loadDriverState() {
-      const vanNo =
-        $("driverVan").value.trim() ||
-        localStorage.getItem("ncm_driver_van") ||
-        "";
-
-      if (!vanNo) {
-        renderDriverState(null);
-        return;
-      }
-
+       const vanNo = activeVanNumber();
+      if (!vanNo) { renderDriverState(null); return; }
       localStorage.setItem("ncm_driver_van", vanNo);
-
-      try {
-        const result = await apiGet({
-          action:"getDriverState",
-          vanNo
-        });
-
-        if (result.success) {
-          driverState = result.state;
-          renderDriverState(driverState);
-        }
-      } catch (error) {
-        setDriverServerStatus("Offline — will retry automatically.", "bad");
-      }
+       const cached = applyQueuedDriverState(loadLocalDriverState(vanNo), vanNo);
+       if (cached && cached.started) saveLocalDriverState(cached);
+       try {
+         const result = await apiGet({action:"getDriverState", vanNo});
+         if (result.success) {
+           const merged = applyQueuedDriverState(result.state, vanNo);
+           saveLocalDriverState(merged);
+         }
+       } catch(e) {
+         updateSyncIndicator();
+         if (!cached || !cached.started) $("driverActionTitle").textContent = "Offline — enter van and branch when connected";
+       }
     }
-
     function changeDriverVan() {
+       const current = activeVanNumber();
+       if ($("driverVan").disabled) {
+         $("driverVan").disabled = false;
+         $("driverVan").focus();
+         return toast("Enter the replacement van number, then tap Change van again.", "warn");
+       }
+       if (current && pendingDriverQueue(current).length && !confirm("This van has unsynced actions. Change van anyway?")) return;
       const van = $("driverVan").value.trim();
-
-      if (!van) {
-        return toast("Enter the correct van number", "bad");
-      }
-
-      localStorage.setItem("ncm_driver_van", van);
-      driverState = null;
-      loadDriverState();
-
-      toast("Van number changed");
+      if (!van) return toast("Enter the correct van number", "bad");
+       if (current && current !== van && driverState && driverState.started && !confirm("Change the active van from " + current + " to " + van + "?")) return;
+       localStorage.setItem("ncm_driver_van", van);
+       setVanInputLock();
+       driverState = applyQueuedDriverState(loadLocalDriverState(van), van);
+       renderDriverState(driverState);
+       loadDriverState();
+       toast("Van number changed");
     }
-
-    function selectCheckIn(branch, btn) {
-      $("driverVan").value = $("driverVan").value.trim();
-
-      if (!$("driverVan").value) {
-        return toast("Enter van number first", "bad");
-      }
-
-      if (btn) {
-        document.querySelectorAll("#checkInBranches .branch-choice").forEach(b => b.disabled = true);
-        btn.classList.add("picked");
-      }
-
+     function rememberVanNumber() {
+       if ($("driverVan").disabled) return;
+       const van = $("driverVan").value.trim();
+       if (!van) return;
+       localStorage.setItem("ncm_driver_van", van);
+       setVanInputLock();
+       driverState = applyQueuedDriverState(loadLocalDriverState(van), van);
+       renderDriverState(driverState);
+       updateSyncIndicator();
+     }
+    function selectCheckIn(branch) {
+       rememberVanNumber();
+       if (!activeVanNumber()) return toast("Enter van number first", "bad");
       driverCheckIn(branch);
     }
-
-    // Instant on-screen update the moment you tap — the save happens
-    // quietly in the background. Only reverts if the server actually
-    // rejects it, so the driver never has to wait to see progress.
     async function driverCheckIn(branch) {
-      const vanNo = $("driverVan").value.trim();
-
-      if (!vanNo) {
-        return toast("Enter van number first", "bad");
-      }
-
-      const previous = driverState;
-      const optimistic = {
-        vanNo, started: true, status: "AT_STATION", branch: normalizeBranch(branch),
-        nextBranch: null, round: (previous && previous.round) || 1, elapsedSeconds: 0
-      };
-      driverState = optimistic;
-      renderDriverState(driverState);
-      setDriverServerStatus("Saving check-in…");
-
-      try {
-        const result = await apiPost({
-          action:"driverCheckIn",
-          vanNo,
-          branch:normalizeBranch(branch)
-        });
-
-        if (!result.success) {
-          driverState = previous;
-          renderDriverState(driverState);
-          setDriverServerStatus("Apps Script: " + (result.error || "check-in failed") + " — reverted.", "bad");
-          return toast(result.error || "Check-in failed", "bad");
-        }
-
-        localStorage.setItem("ncm_driver_van", vanNo);
-        driverState = result.state;
-        renderDriverState(driverState);
-        setDriverServerStatus("Saved. Hold timer running at " + driverState.branch + ".", "ok");
-
-        toast(result.message || "Checked in");
-      } catch (error) {
-        setDriverServerStatus("Network error — screen stays as shown, will resync shortly.", "warn");
-        toast("Network error — will retry", "warn");
-      } finally {
-        document.querySelectorAll("#checkInBranches .branch-choice").forEach(b => b.disabled = false);
-      }
+       const vanNo = activeVanNumber(), target = normalizeBranch(branch);
+       if (!vanNo) return toast("Enter van number first", "bad");
+       if (!BRANCHES.includes(target)) return toast("Choose a valid branch", "bad");
+       if (driverState && driverState.started && driverState.status === "AT_STATION") {
+         if (normalizeBranch(driverState.branch) === target) return toast("Already checked in at " + target, "warn");
+         return toast("Already checked in at " + driverState.branch + ". Use Change / correct branch.", "warn");
+       }
+       if (driverState && driverState.status === "MOVING" && normalizeBranch(driverState.nextBranch) !== target) {
+         return toast("This van is heading to " + driverState.nextBranch, "warn");
+       }
+       const localAt = new Date().toISOString();
+       const optimistic = {vanNo:vanNo, started:true, status:"AT_STATION", branch:target, nextBranch:null,
+         round:Number(driverState && driverState.round) || 1, elapsedSeconds:0, arrivalAt:localAt, localOnly:true};
+       localStorage.setItem("ncm_driver_van", vanNo);
+       setVanInputLock();
+       saveLocalDriverState(optimistic);
+       queueDriverAction("driverCheckIn", {vanNo:vanNo, branch:target, localAt:new Date().toISOString(), offline:navigator.onLine === false});
+       toast(navigator.onLine === false ? "Checked in locally. It will sync automatically." : "Check-in saved. Syncing…", navigator.onLine === false ? "warn" : "ok");
+       await flushDriverQueue();
     }
-
     function pickNext(branch, button) {
       $("nextBranch").value = branch;
-
-      document
-        .querySelectorAll("#checkoutBranches .branch-choice")
-        .forEach(item => item.classList.remove("selected"));
-
-      if (button) {
-        button.classList.add("selected");
-      }
+      document.querySelectorAll("#checkoutBranches .branch-choice").forEach(b => b.classList.remove("selected"));
+      if (button) button.classList.add("selected");
     }
-
-    // Same instant-update treatment as check-in.
     async function driverCheckOut() {
-      const vanNo = $("driverVan").value.trim();
-      const nextBranch = normalizeBranch($("nextBranch").value);
-
-      if (!vanNo) {
-        return toast("Enter van number first", "bad");
-      }
-
-      if (!BRANCHES.includes(nextBranch)) {
-        return toast("Type a valid branch name", "bad");
-      }
-
-      const previous = driverState;
-      const optimistic = Object.assign({}, previous, {
-        status: "MOVING", nextBranch: nextBranch, elapsedSeconds: 0
-      });
-      driverState = optimistic;
-      renderDriverState(driverState);
-      setDriverServerStatus("Saving check-out…");
-
-      try {
-        const result = await apiPost({
-          action:"driverCheckOut",
-          vanNo,
-          nextBranch
-        });
-
-        if (!result.success) {
-          driverState = previous;
-          renderDriverState(driverState);
-          setDriverServerStatus("Apps Script: " + (result.error || "check-out failed") + " — reverted.", "bad");
-          return toast(result.error || "Check-out failed", "bad");
-        }
-
-        driverState = result.state;
-        renderDriverState(driverState);
-        setDriverServerStatus("Saved. Heading to " + driverState.nextBranch + ".", "ok");
-
-        toast(result.message || "Checked out");
-      } catch (error) {
-        setDriverServerStatus("Network error — screen stays as shown, will resync shortly.", "warn");
-        toast("Network error — will retry", "warn");
-      }
+       const vanNo = activeVanNumber(), nextBranch = normalizeBranch($("nextBranch").value);
+      if (!vanNo) return toast("Enter van number first", "bad");
+      if (!BRANCHES.includes(nextBranch)) return toast("Type a valid branch name", "bad");
+       if (!driverState || !driverState.started || driverState.status !== "AT_STATION") return toast("Check in before checking out", "bad");
+       if (normalizeBranch(driverState.branch) === nextBranch) return toast("Choose a different branch", "bad");
+       const fromBranch = normalizeBranch(driverState.branch);
+       const localAt = new Date().toISOString();
+       saveLocalDriverState({vanNo:vanNo, started:true, status:"MOVING", branch:fromBranch, nextBranch:nextBranch,
+         round:Number(driverState.round) || 1, elapsedSeconds:0, departureAt:localAt, localOnly:true});
+       queueDriverAction("driverCheckOut", {vanNo:vanNo, fromBranch:fromBranch, nextBranch:nextBranch,
+         localAt:new Date().toISOString(), offline:navigator.onLine === false});
+       toast(navigator.onLine === false ? "Check-out saved locally. It will sync automatically." : "Check-out saved. Syncing…", navigator.onLine === false ? "warn" : "ok");
+       await flushDriverQueue();
+     }
+     async function correctDriverBranch() {
+       const vanNo = activeVanNumber(), target = normalizeBranch($("correctionBranch").value);
+       if (!vanNo || !driverState || !driverState.started || driverState.status !== "AT_STATION") return toast("There is no current branch to correct", "bad");
+       const previousBranch = normalizeBranch(driverState.branch);
+       if (!BRANCHES.includes(target) || target === previousBranch) return toast("Choose a different valid branch", "bad");
+       if (!confirm("Correct " + previousBranch + " to " + target + "? This will be saved in the audit history.")) return;
+       saveLocalDriverState(Object.assign({}, driverState, {branch:target, localOnly:true, correctedFrom:previousBranch}));
+       queueDriverAction("driverCorrectBranch", {vanNo:vanNo, fromBranch:previousBranch, branch:target,
+         localAt:new Date().toISOString(), offline:navigator.onLine === false});
+       $("correctionCard").classList.add("hidden");
+       toast(navigator.onLine === false ? "Correction saved locally. It will sync automatically." : "Correction saved. Syncing…", navigator.onLine === false ? "warn" : "ok");
+       await flushDriverQueue();
+     }
+     async function flushDriverQueue() {
+       if (!SCRIPT_URL || !session || !session.token || flushDriverQueue.running || !driverQueue().length) {
+         updateSyncIndicator(); return;
+       }
+       if (navigator.onLine === false) { updateSyncIndicator(); return; }
+       flushDriverQueue.running = true;
+       try {
+         for (const item of driverQueue().slice()) {
+           item.attempts = Number(item.attempts || 0) + 1;
+           const currentQueue = driverQueue().map(q => q.id === item.id ? item : q);
+           saveDriverQueue(currentQueue);
+           try {
+             const result = await apiPost(Object.assign({}, item.data, {requestId:item.requestId, clientId:item.requestId}));
+             if (!result || !result.success) {
+               item.lastError = (result && result.error) || "Server rejected this action";
+               const updated = driverQueue().map(q => q.id === item.id ? item : q);
+               saveDriverQueue(updated);
+               toast(item.lastError + ". It remains queued for retry.", "bad");
+               break;
+             }
+             saveDriverQueue(driverQueue().filter(q => q.id !== item.id));
+             if (result.state && String(result.state.vanNo) === String(item.vanNo)) {
+               saveLocalDriverState(applyQueuedDriverState(result.state, item.vanNo));
+             }
+             toast(result.message || "Action synchronized", "ok");
+           } catch(e) {
+             updateSyncIndicator();
+             break;
+           }
+         }
+       } finally {
+         flushDriverQueue.running = false;
+         updateSyncIndicator();
+         renderDriverState(driverState);
+       }
     }
-
-    // Anchors elapsed-time to a real timestamp so the on-screen clock can
-    // never drift or freeze if the phone throttles the tab in the
-    // background — the next tick always jumps to the correct value.
-    function anchorElapsedIfNew(state) {
-      if (state && state.started && state.elapsedSeconds !== lastElapsedInput) {
-        elapsedAnchorAt = Date.now();
-        elapsedAnchorValue = Number(state.elapsedSeconds) || 0;
-        lastElapsedInput = state.elapsedSeconds;
-      }
-    }
-
-    function tickDriverClock() {
-      if (driverState && driverState.started) {
-        const computed = elapsedAnchorValue + Math.floor((Date.now() - elapsedAnchorAt) / 1000);
-        driverState.elapsedSeconds = computed;
-        lastElapsedInput = computed; // this tick's own write shouldn't re-anchor itself
-        renderDriverState(driverState, true);
-      }
-    }
-
-    function renderDriverState(state, isTick) {
-      if (!isTick) anchorElapsedIfNew(state);
-
-      const box = $("driverState");
-      const action = $("driverActionTitle");
-      const checkIn = $("checkInBranches");
-      const checkout = $("checkoutArea");
-
+    function renderDriverState(state) {
+      const box = $("driverState"), action = $("driverActionTitle"), checkIn = $("checkInBranches"), checkout = $("checkoutArea");
       if (!state || !state.started) {
-        box.classList.add("hidden");
-        action.textContent = "Select your current branch";
-        checkIn.classList.remove("hidden");
-        checkout.classList.add("hidden");
-        return;
+         box.classList.add("hidden"); action.textContent = "Select your current branch"; checkIn.classList.remove("hidden"); checkout.classList.add("hidden"); $("correctionCard").classList.add("hidden"); return;
       }
-
-      box.classList.remove("hidden");
-      checkIn.classList.add("hidden");
-
+      box.classList.remove("hidden"); checkIn.classList.add("hidden");
       if (state.status === "MOVING") {
-        box.className = "driver-status moving";
-
-        box.innerHTML = `
-          <h3>Heading to ${esc(state.nextBranch)}</h3>
-          <p class="muted">Check in when you arrive.</p>
-          <div class="timer">${formatSeconds(state.elapsedSeconds)}</div>
-          <span class="badge green">
-            MOVING · ROUND ${esc(state.round)}
-          </span>
-        `;
-
-        action.textContent =
-          "Next check-in: " + state.nextBranch;
-
-        checkout.classList.add("hidden");
+         box.className = "driver-status moving"; box.innerHTML = `<h3>Heading to ${esc(state.nextBranch)}</h3><p class="muted">Check in when you arrive.</p><div class="timer">${formatSeconds(stateElapsedSeconds(state))}</div><span class="badge green">MOVING · ROUND ${esc(state.round)}</span><button class="btn btn-green btn-full mt" onclick="driverCheckIn('${esc(state.nextBranch)}')">Check in at ${esc(state.nextBranch)}</button>`;
+         action.textContent = "Next check-in: " + state.nextBranch; checkout.classList.add("hidden"); $("correctionCard").classList.add("hidden");
       } else {
-        box.className = "driver-status";
-
-        box.innerHTML = `
-          <h3>At ${esc(state.branch)}</h3>
-          <p class="muted">
-            Choose the next branch and check out when leaving.
-          </p>
-          <div class="timer">${formatSeconds(state.elapsedSeconds)}</div>
-          <span class="badge green">
-            AT BRANCH · ROUND ${esc(state.round)}
-          </span>
-        `;
-
-        action.textContent =
-          "Check out from " + state.branch;
-
-        checkout.classList.remove("hidden");
-
-        const options = BRANCHES.filter(
-          branch => branch !== state.branch
-        );
-
-        $("checkoutBranches").innerHTML = options.map(branch =>
-          `
-            <button
-              class="branch-choice"
-              onclick="pickNext('${esc(branch)}', this)"
-            >
-              ${esc(branch)}
-            </button>
-          `
-        ).join("");
+         box.className = "driver-status"; box.innerHTML = `<h3>At ${esc(state.branch)}</h3><p class="muted">Choose the next branch and check out when leaving.</p><div class="timer">${formatSeconds(stateElapsedSeconds(state))}</div><span class="badge green">AT BRANCH · ROUND ${esc(state.round)}</span><button class="btn btn-grey btn-full mt" onclick="startBranchCorrection()">Change / correct branch</button>`;
+        action.textContent = "Check out from " + state.branch; checkout.classList.remove("hidden");
+         $("correctionCard").classList.remove("hidden");
+         $("correctionBranch").value = state.branch;
+        const options = BRANCHES.filter(b => b !== state.branch);
+        $("checkoutBranches").innerHTML = options.map(b => `<button class="branch-choice" onclick="pickNext('${esc(b)}', this)">${esc(b)}</button>`).join("");
       }
     }
-
+     function startBranchCorrection() {
+       if (!driverState || driverState.status !== "AT_STATION") return;
+       $("correctionBranch").value = driverState.branch;
+       $("correctionCard").scrollIntoView({behavior:"smooth", block:"center"});
+     }
+     function tickDriverTimer() {
+       const timer = $("driverState") && $("driverState").querySelector(".timer");
+       if (timer && driverState && driverState.started) timer.textContent = formatSeconds(stateElapsedSeconds(driverState));
+     }
     function updateClock() {
-      const now = new Date();
-
-      $("clock").innerHTML =
-        now.toLocaleTimeString("en-GB", {
-          timeZone:"Asia/Kathmandu",
-          hour12:false
-        }) +
-        "<small>" +
-        now.toLocaleDateString("en-GB", {
-          timeZone:"Asia/Kathmandu"
-        }) +
-        "</small>";
+      const now = new Date(); $("clock").innerHTML = now.toLocaleTimeString("en-GB",{timeZone:"Asia/Kathmandu",hour12:false}) + "<small>" + now.toLocaleDateString("en-GB",{timeZone:"Asia/Kathmandu"}) + "</small>";
     }
-
-    // Force an immediate refresh when the phone's screen comes back on or
-    // the tab regains focus, instead of trusting a possibly-stalled timer.
-    function resyncEverything() {
-      if (!SCRIPT_URL || !session) return;
-      loadAnnouncements();
-      loadContacts();
-      if (session.role === "driver" || session.role === "admin") loadDriverState();
-    }
-    document.addEventListener("visibilitychange", () => { if (!document.hidden) resyncEverything(); });
-    window.addEventListener("pageshow", (e) => { if (e.persisted) resyncEverything(); });
-    window.addEventListener("focus", resyncEverything);
-
-    function renderOfflineBadge() {
-      const badge = $("offlineBadge");
-      if (!badge) return;
-      badge.classList.toggle("hidden", navigator.onLine);
-    }
-
-    window.addEventListener("online", () => {
-      $("onlineStatus").textContent = "Online";
-      renderOfflineBadge();
-      resyncEverything();
-    });
-
-    window.addEventListener("offline", () => {
-      $("onlineStatus").textContent = "Offline";
-      renderOfflineBadge();
-      toast("You are offline", "warn");
-    });
-
     function boot() {
       $("setupCard").classList.toggle("hidden", !!SCRIPT_URL);
-      renderOfflineBadge();
-
-      if (!SCRIPT_URL) {
-        return;
-      }
-
-      if (session && session.token) {
-        showApp();
-      } else {
-        $("loginScreen").classList.remove("hidden");
-        checkServerVersion();
-      }
+      if (!SCRIPT_URL) return;
+      if (session && session.token) showApp(); else $("loginScreen").classList.remove("hidden");
     }
-
-    updateClock();
-    setInterval(updateClock, 1000);
-    boot();
+     window.addEventListener("online", () => {
+       updateSyncIndicator();
+       toast("Connection restored. Syncing saved driver actions…", "ok");
+       flushDriverQueue();
+       loadAnnouncements();
+       loadContacts();
+       loadVanBoard();
+     });
+     window.addEventListener("offline", () => {
+       updateSyncIndicator();
+       toast("Offline. Driver actions will save on this phone and sync automatically.", "warn");
+     });
+     setInterval(() => { updateSyncIndicator(); flushDriverQueue(); }, 5000);
+    updateClock(); setInterval(updateClock,1000); boot();
   </script>
 </body>
 </html>
